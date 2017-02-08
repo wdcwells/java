@@ -1,4 +1,4 @@
-package com.wdc.test.spring.rest.domain;
+package com.wdc.test.domain;
 
 import java.io.Serializable;
 

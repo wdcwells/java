@@ -1,6 +1,6 @@
-package com.wdc.test.spring.rest.controller;
+package com.wdc.test.controller;
 
-import com.wdc.test.spring.rest.domain.HelloWorld;
+import com.wdc.test.domain.HelloWorld;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
