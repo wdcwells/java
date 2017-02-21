@@ -8,6 +8,6 @@
     <version>1.0-SNAPSHOT</version>
 
     <modules>
-        <module>springrestful</module>
+        <module>spring-restful</module>
     </modules>
 </project>

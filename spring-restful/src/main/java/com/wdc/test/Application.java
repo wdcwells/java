@@ -1,4 +1,4 @@
-package com.wdc.test.spring.rest;
+package com.wdc.test;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
