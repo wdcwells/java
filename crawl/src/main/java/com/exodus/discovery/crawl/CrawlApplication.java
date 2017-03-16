@@ -106,6 +106,7 @@ public class CrawlApplication implements CommandLineRunner {
 
             try {
                 Thread.sleep(intervals*1000);
+                intervals = (int) Math.random()*2 + 2;
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
