@@ -9,5 +9,6 @@
 
     <modules>
         <module>spring-boot-rest-security</module>
+        <module>crawl</module>
     </modules>
 </project>
