@@ -6,6 +6,7 @@
     <groupId>com.wdc.test</groupId>
     <artifactId>java</artifactId>
     <version>1.0-SNAPSHOT</version>
+    <packaging>pom</packaging>
 
     <modules>
         <module>spring-boot-rest-security</module>
