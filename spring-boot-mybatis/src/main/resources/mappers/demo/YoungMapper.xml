@@ -3,8 +3,8 @@
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<mapper namespace="com.gocom.demo.mapper.YoungMapper">
-    <select id="findByIds" resultType="com.gocom.demo.domain.model.Young" parameterType="java.util.List">
+<mapper namespace="com.wdc.demo.mapper.YoungMapper">
+    <select id="findByIds" resultType="com.wdc.demo.domain.model.Young" parameterType="java.util.List">
         select * from demo_young where 1 != 1
         <if test="array != null">
             <foreach collection="array" index="index" item="item" open="or id in(" separator="," close=")">
@@ -12,7 +12,7 @@
             </foreach>
         </if>
     </select>
-    <select id="searchPage" resultType="com.gocom.demo.domain.model.Young" parameterType="java.util.Map">
+    <select id="searchPage" resultType="com.wdc.demo.domain.model.Young" parameterType="java.util.Map">
         select * from demo_young where 1=1
         <if test="query != null">
             <if test="query.name != null">
@@ -41,7 +41,7 @@
             limit #{offset},#{size}
         </if>
     </select>
-    <select id="searchCount" resultType="long" parameterType="com.gocom.demo.domain.query.YoungQuery">
+    <select id="searchCount" resultType="long" parameterType="com.wdc.demo.domain.query.YoungQuery">
         select count(1) from demo_young where 1=1
         <if test="name != null">
             and name=#{name}
@@ -60,12 +60,12 @@
         </if>
     </select>
 
-    <insert id="save" parameterType="com.gocom.demo.domain.model.Young" useGeneratedKeys="true" keyProperty="id">
+    <insert id="save" parameterType="com.wdc.demo.domain.model.Young" useGeneratedKeys="true" keyProperty="id">
         insert into demo_young(name,sex,age,create_time,update_time)
         value (#{name},#{sex},#{age},#{create_time},#{update_time})
     </insert>
 
-    <update id="update" parameterType="com.gocom.demo.domain.model.Young">
+    <update id="update" parameterType="com.wdc.demo.domain.model.Young">
         update demo_young SET update_time = #{update_time}
         <if test="name != null">
             name = #{name}

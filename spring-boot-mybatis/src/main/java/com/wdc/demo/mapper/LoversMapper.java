@@ -1,6 +1,6 @@
-package com.gocom.demo.mapper;
+package com.wdc.demo.mapper;
 
-import com.gocom.demo.domain.model.Lovers;
+import com.wdc.demo.domain.model.Lovers;
 import org.apache.ibatis.annotations.*;
 
 import java.util.List;

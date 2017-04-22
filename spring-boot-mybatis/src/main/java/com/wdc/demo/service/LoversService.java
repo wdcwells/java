@@ -1,6 +1,6 @@
-package com.gocom.demo.service;
+package com.wdc.demo.service;
 
-import com.gocom.demo.domain.model.Lovers;
+import com.wdc.demo.domain.model.Lovers;
 
 import java.util.List;
 

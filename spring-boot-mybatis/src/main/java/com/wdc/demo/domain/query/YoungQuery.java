@@ -1,4 +1,4 @@
-package com.gocom.demo.domain.query;
+package com.wdc.demo.domain.query;
 
 /**
  * Created by wangdachong on 2017/4/15.

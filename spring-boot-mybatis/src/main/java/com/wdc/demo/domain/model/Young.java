@@ -1,23 +1,28 @@
-package com.gocom.demo.domain.model;
+package com.wdc.demo.domain.model;
+
+import com.wdc.demo.domain.enums.SexEnum;
 
 import java.io.Serializable;
 
 /**
  * Created by wangdachong on 2017/4/15.
  */
-public class Lovers implements Serializable{
-    private String id;
+public class Young implements Serializable{
+    private Integer id;
     private String name;
-    private Integer boy_id;
-    private Integer girl_id;
+    /**
+     * @see SexEnum
+     */
+    private String sex;
+    private Integer age;
     private String create_time;
     private String update_time;
 
-    public String getId() {
+    public Integer getId() {
         return id;
     }
 
-    public void setId(String id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 
@@ -29,20 +34,20 @@ public class Lovers implements Serializable{
         this.name = name;
     }
 
-    public Integer getBoy_id() {
-        return boy_id;
+    public String getSex() {
+        return sex;
     }
 
-    public void setBoy_id(Integer boy_id) {
-        this.boy_id = boy_id;
+    public void setSex(String sex) {
+        this.sex = sex;
     }
 
-    public Integer getGirl_id() {
-        return girl_id;
+    public Integer getAge() {
+        return age;
     }
 
-    public void setGirl_id(Integer girl_id) {
-        this.girl_id = girl_id;
+    public void setAge(Integer age) {
+        this.age = age;
     }
 
     public String getCreate_time() {
@@ -63,11 +68,11 @@ public class Lovers implements Serializable{
 
     @Override
     public String toString() {
-        return "Lovers{" +
+        return "Young{" +
                 "id=" + id +
                 ", name='" + name + '\'' +
-                ", boy_id=" + boy_id +
-                ", girl_id=" + girl_id +
+                ", sex='" + sex + '\'' +
+                ", age=" + age +
                 ", create_time='" + create_time + '\'' +
                 ", update_time='" + update_time + '\'' +
                 '}';

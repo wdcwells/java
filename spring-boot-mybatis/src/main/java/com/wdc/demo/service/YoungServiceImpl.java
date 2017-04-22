@@ -1,8 +1,8 @@
-package com.gocom.demo.service;
+package com.wdc.demo.service;
 
-import com.gocom.demo.domain.model.Young;
-import com.gocom.demo.domain.query.YoungQuery;
-import com.gocom.demo.mapper.YoungMapper;
+import com.wdc.demo.domain.model.Young;
+import com.wdc.demo.domain.query.YoungQuery;
+import com.wdc.demo.mapper.YoungMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;

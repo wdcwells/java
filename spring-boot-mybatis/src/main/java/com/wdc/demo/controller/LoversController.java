@@ -1,7 +1,7 @@
-package com.gocom.demo.controller;
+package com.wdc.demo.controller;
 
-import com.gocom.demo.domain.model.Lovers;
-import com.gocom.demo.service.LoversService;
+import com.wdc.demo.domain.model.Lovers;
+import com.wdc.demo.service.LoversService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;

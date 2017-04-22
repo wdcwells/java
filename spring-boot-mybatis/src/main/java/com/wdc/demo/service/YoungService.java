@@ -1,7 +1,7 @@
-package com.gocom.demo.service;
+package com.wdc.demo.service;
 
-import com.gocom.demo.domain.model.Young;
-import com.gocom.demo.domain.query.YoungQuery;
+import com.wdc.demo.domain.model.Young;
+import com.wdc.demo.domain.query.YoungQuery;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 

@@ -1,7 +1,7 @@
-package com.gocom.demo.service;
+package com.wdc.demo.service;
 
-import com.gocom.demo.domain.model.Lovers;
-import com.gocom.demo.mapper.LoversMapper;
+import com.wdc.demo.domain.model.Lovers;
+import com.wdc.demo.mapper.LoversMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

@@ -1,7 +1,7 @@
-package com.gocom.demo.mapper;
+package com.wdc.demo.mapper;
 
-import com.gocom.demo.domain.model.Young;
-import com.gocom.demo.domain.query.YoungQuery;
+import com.wdc.demo.domain.model.Young;
+import com.wdc.demo.domain.query.YoungQuery;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Select;
 
