@@ -31,12 +31,27 @@
                 and age &lt;= #{query.age_end}
             </if>
         </if>
-        <if test="sort != null">
-            order by
-            <foreach item="item" collection="sort" separator=",">
-                ${item.property} ${item.direction}
-            </foreach>
-        </if>
+        ORDER BY
+        <choose>
+            <when test="sort != null">
+                <foreach item="item" collection="sort" separator=",">
+                    <if test="item.property != null and item.direction != null">
+                        <choose>
+                        <when test="item.property == 'id' ">
+                            ${item.property} ${item.direction}
+                        </when>
+                        <otherwise>
+                            id DESC
+                        </otherwise>
+                        </choose>
+                    </if>
+                </foreach>
+            </when>
+            <otherwise>
+                id DESC
+            </otherwise>
+        </choose>
+
         <if test="offset != null and size != null">
             limit #{offset},#{size}
         </if>
