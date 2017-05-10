@@ -77,7 +77,7 @@
 
     <insert id="save" parameterType="com.wdc.demo.domain.model.Young" useGeneratedKeys="true" keyProperty="id">
         insert into demo_young(name,sex,age,create_time,update_time)
-        value (#{name},#{sex},#{age},#{create_time},#{update_time})
+        values (#{name},#{sex},#{age},#{create_time},#{update_time})
     </insert>
 
     <update id="update" parameterType="com.wdc.demo.domain.model.Young">
