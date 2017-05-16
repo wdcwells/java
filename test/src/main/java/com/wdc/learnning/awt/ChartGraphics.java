@@ -2,6 +2,8 @@ package com.wdc.learnning.awt;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
+import java.awt.font.FontRenderContext;
+import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
@@ -18,7 +20,7 @@ public class ChartGraphics {
     public static void main(String[] args) {
         ChartGraphics cg = new ChartGraphics();
         try {
-            cg.getHeadIcon("Rachel", "test@test.ai","E:\\tmp\\2.png");
+            cg.getHeadIcon("中国", "test@test.ai", "/Users/rachel/tmp/2.png");
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -30,11 +32,6 @@ public class ChartGraphics {
         int height = 100;
         BufferedImage image = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
         Graphics2D g2d = image.createGraphics();
-
-        //设置背景透明
-//        image = g2d.getDeviceConfiguration().createCompatibleImage(width, height, Transparency.TRANSLUCENT);
-//        g2d.dispose();
-//        g2d = image.createGraphics();
 
         Color curColor = new Color(Integer.parseInt(colors[getDefaultAvatarBgColor(userId)], 16));
         g2d.setColor(curColor);
@@ -48,34 +45,43 @@ public class ChartGraphics {
         g2d.setFont(font);
         g2d.setComposite(AlphaComposite.SrcOver);
 
-        FontMetrics fm = sun.font.FontDesignMetrics.getMetrics(font);
+
         String mString = getMString(userName);
 
-        g2d.drawString(mString, (width - fm.stringWidth(mString))/2, 70);
+        FontRenderContext fontRenderContext = g2d.getFontRenderContext();
+        Rectangle2D rectangle2D = font.getStringBounds(mString, fontRenderContext);
+        int wText = (int) rectangle2D.getWidth();
+        int hText = (int) rectangle2D.getHeight();
+
+        int rX = (width - wText) / 2;
+        int rY = (height - hText) / 2;
+
+//        g2d.drawString(mString, (width - fm.stringWidth(mString))/2, 70);
+        g2d.drawString(mString, (rX - (int) rectangle2D.getX()), (rY - (int) rectangle2D.getY()));
         g2d.dispose();
 
         ImageIO.write(image, "png", new File(imgurl));
     }
 
-    public String getMString(String userName){
+    private String getMString(String userName) {
         String mString = "";
         if (null != userName && userName.trim().length() > 0) {
-            String filterName=getStringFilter(userName).toUpperCase();
+            String filterName = getStringFilter(userName).toUpperCase();
             char[] names;
-            if (filterName.length()>0) {
+            if (filterName.length() > 0) {
                 String throwNumberName = filterName.replaceAll("\\d+", "");
                 if (throwNumberName.length() > 0) {
-                    if (containsChineseChar(throwNumberName)){
-                        throwNumberName=throwNumberName.replaceAll("[a-zA-Z]","" );
+                    if (containsChineseChar(throwNumberName)) {
+                        throwNumberName = throwNumberName.replaceAll("[a-zA-Z]", "");
                         names = throwNumberName.toCharArray();
-                    }else {
+                    } else {
                         names = throwNumberName.toCharArray();
                     }
 
                 } else {
                     names = userName.toCharArray();
                 }
-            }else{
+            } else {
                 names = userName.toCharArray();
             }
             mString = String.valueOf(names[names.length - 1]);
@@ -85,7 +91,7 @@ public class ChartGraphics {
         return mString;
     }
 
-    public int getDefaultAvatarBgColor(String userId) {
+    private int getDefaultAvatarBgColor(String userId) {
         if (null != userId && userId.trim().length() > 0) {
             String[] names = userId.split("@");
             if (names.length > 0) {
@@ -99,14 +105,16 @@ public class ChartGraphics {
             } else {
                 return 0;
             }
-        }else{
+        } else {
             return 0;
         }
 
     }
 
-    /** 过滤特殊字符 */
-    public String getStringFilter(String str) throws PatternSyntaxException {
+    /**
+     * 过滤特殊字符
+     */
+    private String getStringFilter(String str) throws PatternSyntaxException {
 
         String regEx = "[Ω`~!@#$%^&*()+=|{}':;'，,\\[\\].<>/?~！@#￥%……&*（）——+|{}【】‘；：”“’-………《×✘^O^☞★☜$‖か囍℡*^O^*⊙▽⊙⊙﹏⊙*♞→_→←_←》^¥€﹉–╭(╯ε╰)╮＠_＠π_π–-。وˊΩˋ٩Ωω]";
 
@@ -117,7 +125,7 @@ public class ChartGraphics {
         return m.replaceAll("");
     }
 
-    public boolean containsChineseChar(String str) {
+    private boolean containsChineseChar(String str) {
         boolean temp = false;
         Pattern p = Pattern.compile("[\u4e00-\u9fa5]");
         Matcher m = p.matcher(str);
