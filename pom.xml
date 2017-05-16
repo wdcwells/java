@@ -9,6 +9,7 @@
     <packaging>pom</packaging>
 
     <modules>
+        <module>test</module>
         <module>spring-boot-rest-security</module>
         <module>crawl</module>
         <module>spring-boot-mybatis</module>
