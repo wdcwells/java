@@ -43,6 +43,7 @@ public class ChartGraphics {
         g2d.fillRoundRect(0, 0, width, height, radius, radius);
 
         g2d.setColor(Color.WHITE);
+        //字体需系统支持
         Font font = new Font("黑体", Font.BOLD, 60);
         g2d.setFont(font);
         g2d.setComposite(AlphaComposite.SrcOver);
