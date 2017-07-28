@@ -1,5 +1,6 @@
 package com.wdc.learning.mybatise.service;
 
+import com.wdc.learning.mybatise.domain.Page;
 import com.wdc.learning.mybatise.domain.entity.Computer;
 
 import java.util.List;
@@ -11,4 +12,5 @@ public interface ComputerService {
     Computer save(Computer computer);
     List<Computer> getList();
     Computer getOne(Integer id);
+    Page<Computer> getPage(Page page);
 }

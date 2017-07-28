@@ -1,5 +1,6 @@
 package com.wdc.learning.mybatise.web;
 
+import com.wdc.learning.mybatise.domain.Page;
 import com.wdc.learning.mybatise.domain.entity.Computer;
 import com.wdc.learning.mybatise.service.ComputerService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,6 +23,11 @@ public class ComputerController {
     @GetMapping("list")
     public Object getList() {
         return computerService.getList();
+    }
+
+    @GetMapping("page")
+    public Object getPage(Page page) {
+        return computerService.getPage(page);
     }
 
     @GetMapping("{id}")

@@ -1,11 +1,13 @@
 package com.wdc.learning.mybatise.service.impl;
 
+import com.wdc.learning.mybatise.domain.Page;
 import com.wdc.learning.mybatise.domain.entity.Computer;
 import com.wdc.learning.mybatise.domain.repository.ComputerRepository;
 import com.wdc.learning.mybatise.service.ComputerService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -31,5 +33,11 @@ public class ComputerServiceImpl implements ComputerService {
     @Override
     public Computer getOne(Integer id) {
         return computerRepository.geOne(id);
+    }
+
+    @Override
+    public Page<Computer> getPage(Page page) {
+        page.setElements(Collections.emptyList());
+        return page;
     }
 }
