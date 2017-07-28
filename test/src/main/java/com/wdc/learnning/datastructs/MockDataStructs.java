@@ -1,4 +1,4 @@
-package com.wdc.learnning.DataStructs;
+package com.wdc.learnning.datastructs;
 
 /**
  * Created by rachel on 2017/6/16.

@@ -1,4 +1,4 @@
-package com.wdc.learnning.DataStructs;
+package com.wdc.learnning.datastructs;
 
 import org.junit.Test;
 
@@ -18,5 +18,11 @@ public class ArraysTest {
         Arrays.stream(ints).forEach(System.out::println);
         double[] doubles = new double[2];
         Arrays.stream(doubles).forEach(System.out::println);
+    }
+
+    @Test
+    public void testNull(){
+        Integer i = null;
+        System.out.println(new Integer(1).equals(i));
     }
 }
