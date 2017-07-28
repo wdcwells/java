@@ -27,8 +27,7 @@ public class StreamTest {
 
         System.out.println(list.stream().filter(data -> {
             long count = filterList.stream().filter(data1 -> data.id.equals(data1.id)).count();
-            if (count > 0) return false;
-            else return true;
+            return count <= 0;
         }).collect(Collectors.toList()));
     }
 

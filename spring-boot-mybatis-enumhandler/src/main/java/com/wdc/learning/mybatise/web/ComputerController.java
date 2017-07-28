@@ -4,6 +4,8 @@ import com.wdc.learning.mybatise.domain.Page;
 import com.wdc.learning.mybatise.domain.entity.Computer;
 import com.wdc.learning.mybatise.service.ComputerService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.SortDefault;
 import org.springframework.web.bind.annotation.*;
 
 /**
@@ -26,7 +28,9 @@ public class ComputerController {
     }
 
     @GetMapping("page")
-    public Object getPage(Page page) {
+    public Object getPage(@SortDefault(sort = {"publish_time", "create_time"}, direction = Sort.Direction.DESC) Sort springSort) {
+        Page<Object> page = new Page<>();
+        page.setSort(springSort);
         return computerService.getPage(page);
     }
 

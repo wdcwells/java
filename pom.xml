@@ -15,5 +15,8 @@
         <module>spring-boot-mybatis</module>
         <module>spring-boot-logback</module>
         <module>spring-boot-redis</module>
+        <module>spring-boot-mybatis-enumhandler</module>
+        <module>spring-boot-dependency-management</module>
+        <module>spring-boot-flyway</module>
     </modules>
 </project>
