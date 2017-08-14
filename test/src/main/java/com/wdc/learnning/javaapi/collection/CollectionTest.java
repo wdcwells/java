@@ -3,6 +3,7 @@ package com.wdc.learnning.javaapi.collection;
 import org.junit.Test;
 
 import java.util.*;
+import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -10,6 +11,15 @@ import java.util.concurrent.Executors;
  * Created by wangdachong on 2017/8/2.
  */
 public class CollectionTest {
+
+    public static void main(String[] args) throws InterruptedException {
+        //挂了……
+//        CollectionTest test = new CollectionTest();
+//        for (int i = 0; i < 100; i++) {
+//            test.testVectorThreadSafety();
+//        }
+
+    }
 
     /**
      * 集合取交集
@@ -62,16 +72,19 @@ public class CollectionTest {
     }
 
     @Test
-    public void testListThreadSafety() {
+    public void testListThreadSafety() throws InterruptedException {
         List<Object> arrayList = new ArrayList<>();
+        CountDownLatch count = new CountDownLatch(1000);
 
         for (int i = 0; i < 1000; i++) {
             new Thread(() -> {
                 for (int j = 0; j < 100; j++) {
                     arrayList.add(j);
                 }
+                count.countDown();
             }).start();
         }
+        count.await();
         System.out.println(arrayList.size());
     }
 
@@ -90,16 +103,19 @@ public class CollectionTest {
     }
 
     @Test
-    public void testVectorThreadSafety() {
+    public void testVectorThreadSafety() throws InterruptedException {
         ExecutorService executorService = Executors.newFixedThreadPool(1000);
         Vector<Object> vector = new Vector<>();
+        CountDownLatch count = new CountDownLatch(1000);
         for (int i = 0; i < 1000; i++) {
             executorService.execute(() -> {
                 for (int j = 0; j < 100; j++) {
                     vector.add(j);
                 }
+                count.countDown();
             });
         }
+        count.await();
         System.out.println(vector.size());
     }
 
