@@ -15,12 +15,16 @@ public class CompareTest {
         ));
     }
 
+    /**
+     * valueOf方法，需要考虑jdk的缓存数组，-128，127的整数。
+     */
     @Test
     public void testInteger() {
-        Integer id = Integer.valueOf(1);
-        Integer id1 = Integer.valueOf(1);
-        Integer id2 = new Integer(1);
-        int id3 = 1;
+        Integer id = Integer.valueOf(99999);
+        Integer id1 = Integer.valueOf(99999);
+        Integer id2 = new Integer(99999);
+        int id3 = 99999;
+        Integer id4 = 99999;
         System.out.println(id.equals(id1));
         System.out.println(id == id1);
 
@@ -29,6 +33,15 @@ public class CompareTest {
 
         System.out.println(id.equals(id3));
         System.out.println(id == id3);
+
+        System.out.println(id.equals(id4));
+        System.out.println(id == id4);
+
+        System.out.println(id4.equals(id3));
+        System.out.println(id3 == id4);
+
+        System.out.println(id2.equals(id4));
+        System.out.println(id2 == id4);
     }
 
     @Test
