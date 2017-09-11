@@ -19,13 +19,15 @@ public class JdbcUtil {
             } catch (SQLException e) {
                 e.printStackTrace();
             }
-        }if (null != statement) {
+        }
+        if (null != statement) {
             try {
                 statement.close();
             } catch (SQLException e) {
                 e.printStackTrace();
             }
-        }if (null != connection) {
+        }
+        if (null != connection) {
             try {
                 connection.close();
             } catch (SQLException e) {
