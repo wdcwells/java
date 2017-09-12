@@ -163,4 +163,92 @@ public class CollectionTest {
             return (this.id == other.id);
         }
     }
+
+    /**
+     * foreach 动态数组异常
+     */
+    @Test
+    public void testArrayListForEach(){
+        List<Integer> list1 = Arrays.asList(1,2,3);
+        List<Integer> list2 = new ArrayList<>(Arrays.asList(1,2,3));
+        List<Integer> list3 = new ArrayList<>();
+        list3.add(1);
+        list3.add(2);
+        list3.add(3);
+
+        try {
+//            for (int i = 0; i < list1.size(); i++) {
+//                list1.add(list1.get(i)*10);
+//            }
+
+//            for (Integer i: list1
+//                 ) {
+//                list1.add(i*10);
+//            }
+
+//            list1.forEach(integer -> list1.add(integer*10));
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.out.println("--------list1 exception--------");
+        }
+        try {
+            for (int i = 0; i < list2.size(); i++) {
+                if (i<5) {
+                    list2.add(list2.get(i)*10);
+                } else {
+                    break;
+                }
+            }
+
+//            for (Integer i: list2
+//                 ) {
+//                if (i < 20) {
+//                    list2.add(i*10);
+//                } else {
+//                    break;
+//                }
+//            }
+
+//            list2.forEach(integer -> {
+//                if (integer < 20) {
+//                    list2.add(integer*10);
+//                }
+//            });
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.out.println("--------list2 exception--------");
+        }
+        try {
+            for (int i = 0; i < list3.size(); i++) {
+                if (i < 5) {
+                    list3.add(list3.get(i)*10);
+                } else {
+                    break;
+                }
+            }
+
+//            for (Integer i: list3
+//                 ) {
+//                if (i<5) {
+//                    list3.add(i*10);
+//                } else {
+//                    break;
+//                }
+//            }
+
+//            list3.forEach(integer -> {
+//                if (integer < 20) {
+//                    list3.add(integer*10);
+//                }
+//            });
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.out.println("--------list3 exception--------");
+        }
+
+        System.out.println(Arrays.toString(list1.toArray()));
+        System.out.println(Arrays.toString(list2.toArray()));
+        System.out.println(Arrays.toString(list3.toArray()));
+
+    }
 }
