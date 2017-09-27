@@ -1,4 +1,4 @@
-package com.wdc.learnning;
+package com.wdc.learnning.serial;
 
 import java.io.*;
 
