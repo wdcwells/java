@@ -251,4 +251,40 @@ public class CollectionTest {
         System.out.println(Arrays.toString(list3.toArray()));
 
     }
+
+    /**
+     * Arrays.asList 返回内部类，只实现了get 无add/remove/clear
+     */
+    @Test
+    public void testArrays() {
+        Integer[] integers = {1, 2};
+        List<Integer> list = Arrays.asList(integers);
+        integers[0] = 0;
+        System.out.println(list.get(0));
+    }
+
+    /**
+     * 集合快速去重
+     */
+    @Test
+    public void testListToSet() {
+        List<Integer> list = new ArrayList<>(Arrays.asList(1,2,1,3));
+        Set<Integer> set = new HashSet<>(list);
+        set.forEach(System.out::println);
+    }
+
+    /**
+     * 范型擦除-集合
+     */
+    @Test
+    public void testListString() {
+        List<Integer> list = new ArrayList<>();
+        list.add(1);
+
+        List list1 = list;
+        list1.add("2");
+        list1.forEach(System.out::println);
+    }
+
+
 }
