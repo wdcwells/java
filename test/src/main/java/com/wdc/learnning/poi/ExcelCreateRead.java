@@ -6,6 +6,7 @@ import org.apache.poi.xssf.usermodel.XSSFRow;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
+import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.Date;
@@ -160,7 +161,9 @@ public class ExcelCreateRead {
     }
 
     public static void main(String[] args) throws IOException {
-        createExcel(file);
+        if (!new File(file).exists()) {
+            createExcel(file);
+        }
         readExcel(file);
     }
 }
