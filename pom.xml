@@ -26,5 +26,6 @@
         <module>spring-boot-dependency-management</module>
         <module>spring-boot-flyway</module>
         <module>jdbc-to-springdata</module>
+        <module>spring-boot-swagger</module>
     </modules>
 </project>
