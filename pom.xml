@@ -28,5 +28,6 @@
         <module>jdbc-to-springdata</module>
         <module>spring-boot-swagger</module>
         <module>spring-boot-jsp</module>
+        <module>spring-boot-shiro</module>
     </modules>
 </project>
