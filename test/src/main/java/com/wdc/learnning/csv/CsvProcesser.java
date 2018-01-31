@@ -16,8 +16,7 @@ public class CsvProcesser {
 
     public static void main(String[] args) throws IOException {
 //        new CsvProcesser().processByBufferReader("/Users/wdc/Desktop/Tmp/recovery/蔚商-test1.csv");
-        new CsvProcesser().processByCommonsCsv("/Users/wdc/Desktop/Tmp/recovery/蔚商-test1.csv");
-
+        System.out.println(new CsvProcesser().processByCommonsCsv("/Users/wdc/Desktop/Tmp/recovery/蔚商-test1.csv"));
     }
 
     private List<JavaItem> processByCommonsCsv(String fileName) throws IOException {
@@ -25,6 +24,9 @@ public class CsvProcesser {
         try (Reader in = new FileReader(fileName)) {
             Iterable<CSVRecord> records = CSVFormat.EXCEL.parse(in);
             for (CSVRecord record : records) {
+                final StringBuilder stringBuilder = new StringBuilder();
+                record.forEach(stringBuilder::append);
+                if (stringBuilder.toString().trim().length() == 0) continue;
                 Integer id = Integer.valueOf(record.get(0));
                 String name = record.get(1);
                 BigDecimal bigDecimal = BigDecimal.valueOf(Double.valueOf(record.get(2)));
@@ -99,6 +101,16 @@ public class CsvProcesser {
 
         public void setDate(Date date) {
             this.date = date;
+        }
+
+        @Override
+        public String toString() {
+            return "{" +
+                    "id=" + id +
+                    ", name='" + name + '\'' +
+                    ", bigDecimal=" + bigDecimal +
+                    ", date=" + date +
+                    '}';
         }
     }
 }
