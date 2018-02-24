@@ -2,6 +2,8 @@ package com.wdc.learnning.date;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.Date;
 
 /**
@@ -24,9 +26,10 @@ public class DateUtil {
         return new Date(today0Time() - 3600*24*1000).getTime();
     }
 
-    public static void main(String[] args) throws ParseException {
-        System.out.println("当前毫秒:" + currentMillionires());
-        System.out.println("今日零时毫秒:" + today0Time());
-        System.out.println("昨日零时:" + yestoday0Time());
+
+
+    public static void main(String[] args) throws Exception{
+        LocalDate parse = LocalDate.parse("2018-01-31", DateTimeFormatter.ISO_LOCAL_DATE);
+        System.out.println(parse.getYear());
     }
 }
