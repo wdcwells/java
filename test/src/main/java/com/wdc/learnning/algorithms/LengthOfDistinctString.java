@@ -2,21 +2,28 @@ package com.wdc.learnning.algorithms;
 
 public class LengthOfDistinctString {
     public int lengthOfLongestSubstring(String s) {
-        char[] charArr = s.toCharArray();
-        StringBuilder result = new StringBuilder();
-        for(int i=0; i< charArr.length; i++) {
-            if(result.indexOf(String.valueOf(charArr[i])) < 0){
-                result.append(charArr[i]);
+        if (null == s || s.length() == 0) return 0;
+        int begin = 0, end = 1, maxLenth = 1;
+        String subStr = s.substring(begin, end);
+        while (end < s.length()) {
+            char curChar = s.charAt(end);
+            int foundIndex = subStr.indexOf(curChar);
+            if (foundIndex == -1) {
             } else {
-                result.append("-");
+                begin = begin + foundIndex + 1;
             }
-
+            end++;
+            subStr = s.substring(begin, end);
+            if ((end - begin) > maxLenth) maxLenth = end - begin;
         }
-        return result.length();
+        return maxLenth;
     }
 
     public static void main(String[] args) {
         LengthOfDistinctString obj = new LengthOfDistinctString();
+        System.out.println(obj.lengthOfLongestSubstring(""));
+        System.out.println(obj.lengthOfLongestSubstring("abcabcbb"));
+        System.out.println(obj.lengthOfLongestSubstring("bbbbb"));
         System.out.println(obj.lengthOfLongestSubstring("pwwkew"));
     }
 }
