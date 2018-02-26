@@ -1,8 +1,6 @@
 package com.wdc.learnning.algorithms;
 
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
 
 public class MedianOfTwoSortedArrays {
 
@@ -74,63 +72,70 @@ public class MedianOfTwoSortedArrays {
                 }
             }
             // 情况2.2：有交集，遍历、比较、得到中间值
-            int[] outer = null;
-            int[] inner = null;
-            boolean isContain = false;
-            List<Integer> addedResult = new ArrayList<>(totalSize);
-            if (nums1[0] <= nums2[0]) {
-                outer = nums1;
-                inner = nums2;
-                if (nums1[size1 - 1] >= nums2[size2 - 1]) isContain = true;
-            } else {
-                outer = nums2;
-                inner = nums1;
-                if (nums2[size2 - 1] >= nums1[size1 - 1]) isContain = true;
-            }
-            if (null != outer && null != inner) {
-                //  情况2.2.1：包含关系，遍历、比较、得到中间值
-                if (isContain) {
-                    int innerCount = 0;
-                    for (int i = 0; i < outer.length; i++) {
-                        addedResult.add(outer[i]);
-                        for (int j = innerCount; j < inner.length; j++) {
-                            if (outer[i] < inner[j]) {
-                                break;
-                            } else {
-                                addedResult.set(addedResult.size() - 1, inner[j]);
-                                addedResult.add(outer[i]);
-                                innerCount++;
-                            }
-                        }
-                    }
-                }
-                //  情况2.2.2：交叉关系，遍历、比较、得到中间值
-                else {
-                    for (int i = 0; i < outer.length; i++) {
-                        for (int j = inner.length - 1, k = 1; j > 0; j--, k++) {
-                            int tmp1 = outer[i];
-                            if (outer[i] <= inner[0]) {
-                                addedResult.add(outer[i]);
-                            } else {
-
-                            }
-                            if (inner[j] >= outer[outer.length - 1]) {
-                                addedResult.set(totalSize - k, inner[j]);
-                            }
-
-                        }
-                    }
-                }
-            }
-            if (!addedResult.isEmpty()) {
+            int[] result = new int[totalSize];
+            result = handleArrays(result, nums1, nums2, 0, totalSize - 1);
+            if (result.length > 0) {
                 if (hasTwoMedian) {
-                    return (addedResult.get(firstMedian - 1) + addedResult.get(firstMedian)) / 2.0;
+                    return (result[firstMedian - 1] + result[firstMedian]) / 2.0;
                 } else {
-                    return addedResult.get(firstMedian - 1);
+                    return result[firstMedian - 1];
                 }
             }
         }
         return 0;
+    }
+
+    private int[] handleArrays(int[] result, int[] nums1, int[] nums2, int begin, int end) {
+        if (nums1.length == 0 && nums2.length == 0) return result;
+        int[] tmp;
+        if (nums1.length == 0) {
+            tmp = nums2;
+        } else if (nums2.length == 0) {
+            tmp = nums1;
+        } else {
+            int[] first;
+            int[] second;
+            if (nums1[0] <= nums2[0]) {
+                first = nums1;
+                second = nums2;
+            } else {
+                first = nums2;
+                second = nums1;
+            }
+            int i = 0, j = 0;
+            int[] temp;
+            while (first[i] <= second[0]) {
+                result[begin++] = first[i++];
+            }
+            int maxFirst = first[first.length - 1];
+            int maxSecond = second[second.length - 1];
+            int max;
+            if (maxFirst <= maxSecond) {
+                j = second.length - 1;
+                temp = second;
+                max = maxFirst;
+            } else {
+                j = first.length - 1;
+                temp = first;
+                max = maxSecond;
+            }
+            for (; j >= 0 && temp[j] >= max && begin < end; j--) {
+                result[end--] = temp[j];
+            }
+            return handleArrays(result,
+                    Arrays.copyOfRange(first, i, first.length),
+                    Arrays.copyOfRange(second, 0, j + 1),
+                    begin,
+                    end
+            );
+        }
+        if (null != tmp) {
+            int i = 0;
+            while (begin < end && i < tmp.length) {
+                result[begin++] = tmp[i++];
+            }
+        }
+        return result;
     }
 
     public static void main(String[] args) {

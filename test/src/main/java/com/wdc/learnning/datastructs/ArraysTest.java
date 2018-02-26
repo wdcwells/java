@@ -2,7 +2,9 @@ package com.wdc.learnning.datastructs;
 
 import org.junit.Test;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 /**
  * Created by wangdachong on 2017/4/14.
@@ -24,5 +26,18 @@ public class ArraysTest {
     public void testNull(){
         Integer i = null;
         System.out.println(new Integer(1).equals(i));
+    }
+
+    @Test
+    public void testListRemove(){
+        List<String> list = new ArrayList<>(Arrays.asList("java","test","java","nu","java"));
+//        for (int i = list.size() - 1; i >=0 ; i--) {
+//            if ("java".equals(list.get(i))) list.remove(i);
+//        }
+
+        for (int i = 0; i < list.size(); i++) {
+            if ("java".equals(list.get(i))) list.remove(i);
+        }
+        list.forEach(System.out::println);
     }
 }
