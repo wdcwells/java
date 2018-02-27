@@ -87,7 +87,7 @@ public class MedianOfTwoSortedArrays {
 
     private int[] handleArrays(int[] result, int[] nums1, int[] nums2, int begin, int end) {
         if (nums1.length == 0 && nums2.length == 0) return result;
-        int[] tmp;
+        int[] tmp = null;
         if (nums1.length == 0) {
             tmp = nums2;
         } else if (nums2.length == 0) {
@@ -95,6 +95,7 @@ public class MedianOfTwoSortedArrays {
         } else {
             int[] first;
             int[] second;
+            boolean isContain = false;
             if (nums1[0] <= nums2[0]) {
                 first = nums1;
                 second = nums2;
@@ -102,36 +103,39 @@ public class MedianOfTwoSortedArrays {
                 first = nums2;
                 second = nums1;
             }
-            int i = 0, j = 0;
-            int[] temp;
-            while (first[i] <= second[0]) {
-                result[begin++] = first[i++];
-            }
-            int maxFirst = first[first.length - 1];
-            int maxSecond = second[second.length - 1];
-            int max;
-            if (maxFirst <= maxSecond) {
-                j = second.length - 1;
-                temp = second;
-                max = maxFirst;
+            if (first[first.length - 1] >= second[second.length - 1]) isContain = true;
+            int[] nums11 = null, nums12 = null;
+            if (isContain) {
+                int i = 0, j = first.length - 1;
+                while (i < first.length && first[i] <= second[0]) {
+                    result[begin++] = first[i++];
+                }
+                while (j >= i && first[j] >= second[second.length - 1]) {
+                    result[end--] = first[j--];
+                }
+                if (j < i) nums11 = new int[0];
+                nums12 = second;
             } else {
-                j = first.length - 1;
-                temp = first;
-                max = maxSecond;
-            }
-            for (; j >= 0 && temp[j] >= max && begin < end; j--) {
-                result[end--] = temp[j];
+                int i = 0, j = second.length - 1;
+                while (i < first.length && first[i] <= second[0]) {
+                    result[begin++] = first[i++];
+                }
+                for (; j >= 0 && second[j] >= first[first.length - 1] && begin <= end; j--) {
+                    result[end--] = second[j];
+                }
+                nums11 = i == first.length ? new int[0] : Arrays.copyOfRange(first, i, first.length);
+                nums12 = j == -1 ? new int[0] : Arrays.copyOfRange(second, 0, j + 1);
             }
             return handleArrays(result,
-                    Arrays.copyOfRange(first, i, first.length),
-                    Arrays.copyOfRange(second, 0, j + 1),
+                    nums11,
+                    nums12,
                     begin,
                     end
             );
         }
         if (null != tmp) {
             int i = 0;
-            while (begin < end && i < tmp.length) {
+            while (begin <= end && i < tmp.length) {
                 result[begin++] = tmp[i++];
             }
         }
@@ -147,7 +151,8 @@ public class MedianOfTwoSortedArrays {
         System.out.println(obj.findMedianSortedArrays(new int[]{1, 3}, new int[]{2}));
         System.out.println(obj.findMedianSortedArrays(new int[]{1, 3, 4}, new int[]{2, 5}));
         System.out.println(obj.findMedianSortedArrays(new int[]{1, 6}, new int[]{2, 3, 4, 5}));
-        System.out.println(obj.findMedianSortedArrays(new int[]{2}, new int[]{1, 3, 4}));
+        System.out.println(obj.findMedianSortedArrays(new int[]{4}, new int[]{1, 2, 3, 5}));
+        System.out.println(obj.findMedianSortedArrays(new int[]{1, 4}, new int[]{1, 3, 5}));
     }
 
     public double findMedianSortedArrays1(int[] nums1, int[] nums2) {
