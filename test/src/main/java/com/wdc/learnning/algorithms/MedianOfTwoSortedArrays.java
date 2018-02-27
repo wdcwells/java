@@ -114,6 +114,7 @@ public class MedianOfTwoSortedArrays {
                     result[end--] = first[j--];
                 }
                 if (j < i) nums11 = new int[0];
+                else nums11 = Arrays.copyOfRange(first, i, j+1);
                 nums12 = second;
             } else {
                 int i = 0, j = second.length - 1;
@@ -152,7 +153,7 @@ public class MedianOfTwoSortedArrays {
         System.out.println(obj.findMedianSortedArrays(new int[]{1, 3, 4}, new int[]{2, 5}));
         System.out.println(obj.findMedianSortedArrays(new int[]{1, 6}, new int[]{2, 3, 4, 5}));
         System.out.println(obj.findMedianSortedArrays(new int[]{4}, new int[]{1, 2, 3, 5}));
-        System.out.println(obj.findMedianSortedArrays(new int[]{1, 4}, new int[]{1, 3, 5}));
+        System.out.println(obj.findMedianSortedArrays(new int[]{2, 4}, new int[]{1, 3, 5}));
     }
 
     public double findMedianSortedArrays1(int[] nums1, int[] nums2) {
