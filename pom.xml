@@ -29,5 +29,6 @@
         <module>spring-boot-swagger</module>
         <module>spring-boot-jsp</module>
         <module>spring-boot-shiro</module>
+        <module>spring-boot-filter-intercepter</module>
     </modules>
 </project>
