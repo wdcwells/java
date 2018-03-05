@@ -1,4 +1,4 @@
-package com.wdc.test.dto;
+package com.wdc.test.dtos;
 
 import com.wdc.test.entity.UserEntity;
 
