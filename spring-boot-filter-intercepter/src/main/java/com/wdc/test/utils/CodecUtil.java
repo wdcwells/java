@@ -6,6 +6,7 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStreamReader;
+import java.security.Key;
 import java.security.KeyFactory;
 import java.security.MessageDigest;
 import java.security.interfaces.RSAPrivateKey;
@@ -19,8 +20,12 @@ public class CodecUtil {
         RSAPublicKey publicKey = rsaLoadPub("/Users/wdc/Develop/Tools/Rsa/rsa_public_key.pem");
         RSAPrivateKey privateKey = rsaLoadPri("/Users/wdc/Develop/Tools/Rsa/pkcs8_rsa_private_key.pem");
         byte[] wdc = rsaEncrypt(publicKey, "wdc".getBytes());
+        byte[] wqh = rsaEncrypt(privateKey, "wqh".getBytes());
         System.out.println(new String(wdc));
+        System.out.println(new String(wqh));
         System.out.println(new String(rsaDecrypt(privateKey, wdc)));
+        System.out.println(new String(rsaDecrypt(publicKey, wqh)));
+
     }
 
     public static byte[] md5(byte[] param) {
@@ -41,7 +46,7 @@ public class CodecUtil {
         return Base64.getDecoder().decode(param);
     }
 
-    public static byte[] rsaEncrypt(RSAPublicKey key, byte[] text) {
+    public static byte[] rsaEncrypt(Key key, byte[] text) {
         try {
             Cipher cipher = Cipher.getInstance("RSA");
             cipher.init(Cipher.ENCRYPT_MODE, key);
@@ -52,7 +57,7 @@ public class CodecUtil {
         return text;
     }
 
-    public static byte[] rsaDecrypt(RSAPrivateKey key, byte[] text) {
+    public static byte[] rsaDecrypt(Key key, byte[] text) {
         try {
             Cipher cipher = Cipher.getInstance("RSA");
             cipher.init(Cipher.DECRYPT_MODE, key);
