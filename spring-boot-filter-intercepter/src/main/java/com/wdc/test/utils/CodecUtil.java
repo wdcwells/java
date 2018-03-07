@@ -20,7 +20,7 @@ import java.security.spec.X509EncodedKeySpec;
 import java.util.Base64;
 
 public class CodecUtil {
-    private static final Path DEFAULT_AES_KEY_PATH = Paths.get(CodecUtil.class.getResource("/").getPath(), "aes.key").toAbsolutePath();
+    //    private static final Path DEFAULT_AES_KEY_PATH = Paths.get(CodecUtil.class.getResource("/").getPath(), "aes.key").toAbsolutePath();
     private static final String AlGRITHM_AES = "AES";
     private static final String ALGRITHM_RSA = "RSA";
 
@@ -170,14 +170,6 @@ public class CodecUtil {
         if (null != path && path.trim().length() > 0) {
             try {
                 byte[] bytes = Files.readAllBytes(Paths.get(path));
-                secretKeySpec = new SecretKeySpec(bytes, AlGRITHM_AES);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-        if (null == secretKeySpec) {
-            try {
-                byte[] bytes = Files.readAllBytes(DEFAULT_AES_KEY_PATH);
                 secretKeySpec = new SecretKeySpec(bytes, AlGRITHM_AES);
             } catch (IOException e) {
                 e.printStackTrace();
