@@ -1,5 +1,8 @@
 package com.wdc.test.utils;
 
+import java.security.PrivateKey;
+import java.security.PublicKey;
+import java.security.Signature;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -21,5 +24,30 @@ public class SignUtil {
             tmp.append(key).append("=").append(params.get(key));
             return tmp.toString();
         }).collect(Collectors.joining("&"));
+    }
+
+    public static byte[] rsaSign(byte[] content, PrivateKey key, String signAlgrithm) {
+        try {
+            Signature signature = Signature.getInstance(signAlgrithm);
+            signature.initSign(key);
+            signature.update(content);
+            return signature.sign();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return content;
+    }
+
+
+    public static boolean rsaVerifySign(byte[] content, byte[] sign, PublicKey key, String signAlgrithm) {
+        try {
+            Signature signature = Signature.getInstance(signAlgrithm);
+            signature.initVerify(key);
+            signature.update(content);
+            return signature.verify(sign);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return false;
     }
 }
