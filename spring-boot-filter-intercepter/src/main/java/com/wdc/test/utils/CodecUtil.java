@@ -2,13 +2,17 @@ package com.wdc.test.utils;
 
 
 import javax.crypto.Cipher;
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.InputStreamReader;
+import javax.crypto.KeyGenerator;
+import javax.crypto.SecretKey;
+import javax.crypto.spec.SecretKeySpec;
+import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.security.Key;
 import java.security.KeyFactory;
 import java.security.MessageDigest;
+import java.security.SecureRandom;
 import java.security.interfaces.RSAPrivateKey;
 import java.security.interfaces.RSAPublicKey;
 import java.security.spec.PKCS8EncodedKeySpec;
@@ -16,15 +20,25 @@ import java.security.spec.X509EncodedKeySpec;
 import java.util.Base64;
 
 public class CodecUtil {
+    private static final Path DEFAULT_AES_KEY_PATH = Paths.get(CodecUtil.class.getResource("/").getPath(), "aes.key").toAbsolutePath();
+    private static final String AlGRITHM_AES = "AES";
+    private static final String ALGRITHM_RSA = "RSA";
+
     public static void main(String[] args) {
-        RSAPublicKey publicKey = rsaLoadPub("/Users/wdc/Develop/Tools/Rsa/rsa_public_key.pem");
-        RSAPrivateKey privateKey = rsaLoadPri("/Users/wdc/Develop/Tools/Rsa/pkcs8_rsa_private_key.pem");
+        RSAPublicKey publicKey = rsaLoadPubFromFile("/Users/wdc/Develop/Tools/Rsa/rsa_public_key.pem");
+        RSAPrivateKey privateKey = rsaLoadPriFromFile("/Users/wdc/Develop/Tools/Rsa/pkcs8_rsa_private_key.pem");
         byte[] wdc = rsaEncrypt(publicKey, "wdc".getBytes());
         byte[] wqh = rsaEncrypt(privateKey, "wqh".getBytes());
         System.out.println(new String(wdc));
         System.out.println(new String(wqh));
         System.out.println(new String(rsaDecrypt(privateKey, wdc)));
         System.out.println(new String(rsaDecrypt(publicKey, wqh)));
+
+        SecretKey secretKey = aesGenKey();
+        byte[] aesEncrypt = aesEncrypt("jd".getBytes(), secretKey);
+        byte[] aesDecrypt = aesDecrypt(aesEncrypt, secretKey);
+        System.out.println(new String(aesDecrypt));
+
 
     }
 
@@ -48,7 +62,7 @@ public class CodecUtil {
 
     public static byte[] rsaEncrypt(Key key, byte[] text) {
         try {
-            Cipher cipher = Cipher.getInstance("RSA");
+            Cipher cipher = Cipher.getInstance(ALGRITHM_RSA);
             cipher.init(Cipher.ENCRYPT_MODE, key);
             return cipher.doFinal(text);
         } catch (Exception e) {
@@ -59,7 +73,7 @@ public class CodecUtil {
 
     public static byte[] rsaDecrypt(Key key, byte[] text) {
         try {
-            Cipher cipher = Cipher.getInstance("RSA");
+            Cipher cipher = Cipher.getInstance(ALGRITHM_RSA);
             cipher.init(Cipher.DECRYPT_MODE, key);
             return cipher.doFinal(text);
         } catch (Exception e) {
@@ -68,18 +82,114 @@ public class CodecUtil {
         return text;
     }
 
-    public static RSAPublicKey rsaLoadPub(String file) {
+    public static RSAPublicKey rsaLoadPubFromFile(String file) {
         String pubKey;
-        if (null != (pubKey = readKeyFromPemFile(file))) {
+        if (null != (pubKey = readKeyFromFile(file))) {
             return rsaDecodePubKey(pubKey);
         }
         return null;
     }
 
+    public static RSAPrivateKey rsaLoadPriFromFile(String file) {
+        String priKey;
+        if (null != (priKey = readKeyFromFile(file))) {
+            return rsaDecodePKCS8PriKey(priKey);
+        }
+        return null;
+    }
+
+    private static byte[] aesCrypt(byte[] content, Key key, int crypt) {
+        try {
+            Cipher cipher = Cipher.getInstance(AlGRITHM_AES);
+            cipher.init(crypt, key);
+            return cipher.doFinal(content);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return content;
+    }
+
+    public static byte[] aesEncrypt(byte[] content, Key key) {
+        return aesCrypt(content, key, Cipher.ENCRYPT_MODE);
+    }
+
+    public static byte[] aesEncrypt(byte[] content, String path) {
+        SecretKey secretKey = aesReadKeyFromFile(path);
+        if (null != secretKey) {
+            return aesEncrypt(content, secretKey);
+        }
+        return content;
+    }
+
+    public static byte[] aesDecrypt(byte[] content, Key key) {
+        return aesCrypt(content, key, Cipher.DECRYPT_MODE);
+    }
+
+    public static byte[] aesDecrypt(byte[] content, String path) {
+        SecretKey secretKey = aesReadKeyFromFile(path);
+        if (null != secretKey) {
+            return aesDecrypt(content, secretKey);
+        }
+        return content;
+    }
+
+    public static SecretKey aesGenKey() {
+        return aesGenKey(null, null);
+    }
+
+    private static SecretKey aesGenKey(byte[] seed, String path) {
+        try {
+            KeyGenerator aes = KeyGenerator.getInstance(AlGRITHM_AES);
+            SecureRandom random = new SecureRandom();
+            if (null != seed && seed.length > 0) {
+                random.setSeed(seed);
+            }
+            aes.init(random);
+            SecretKey secretKey = aes.generateKey();
+            if (null != path && path.trim().length() > 0) {
+                aesStoreKeyToFile(secretKey, path);
+            }
+            return secretKey;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    private static void aesStoreKeyToFile(Key secretKey, String path) {
+        try {
+            Path store = Paths.get(path);
+            Files.write(store, secretKey.getEncoded());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private static SecretKey aesReadKeyFromFile(String path) {
+        SecretKeySpec secretKeySpec = null;
+        if (null != path && path.trim().length() > 0) {
+            try {
+                byte[] bytes = Files.readAllBytes(Paths.get(path));
+                secretKeySpec = new SecretKeySpec(bytes, AlGRITHM_AES);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        if (null == secretKeySpec) {
+            try {
+                byte[] bytes = Files.readAllBytes(DEFAULT_AES_KEY_PATH);
+                secretKeySpec = new SecretKeySpec(bytes, AlGRITHM_AES);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        return secretKeySpec;
+    }
+
     private static RSAPublicKey rsaDecodePubKey(String pubKey) {
         try {
             byte[] base64Key = base64Decode(pubKey.getBytes());
-            KeyFactory rsa = KeyFactory.getInstance("RSA");
+            KeyFactory rsa = KeyFactory.getInstance(ALGRITHM_RSA);
             X509EncodedKeySpec keySpec = new X509EncodedKeySpec(base64Key);
             return (RSAPublicKey) rsa.generatePublic(keySpec);
         } catch (Exception e) {
@@ -88,18 +198,10 @@ public class CodecUtil {
         return null;
     }
 
-    public static RSAPrivateKey rsaLoadPri(String file) {
-        String priKey;
-        if (null != (priKey = readKeyFromPemFile(file))) {
-            return rsaDecodePKCS8PriKey(priKey);
-        }
-        return null;
-    }
-
     private static RSAPrivateKey rsaDecodePKCS8PriKey(String priKey) {
         try {
             byte[] base64Key = base64Decode(priKey.getBytes());
-            KeyFactory rsa = KeyFactory.getInstance("RSA");
+            KeyFactory rsa = KeyFactory.getInstance(ALGRITHM_RSA);
             PKCS8EncodedKeySpec keySpec = new PKCS8EncodedKeySpec(base64Key);
             return (RSAPrivateKey) rsa.generatePrivate(keySpec);
         } catch (Exception e) {
@@ -108,7 +210,7 @@ public class CodecUtil {
         return null;
     }
 
-    private static String readKeyFromPemFile(String file) {
+    private static String readKeyFromFile(String file) {
         File pubFile = new File(file);
         if (pubFile.exists()) {
             try (BufferedReader br = new BufferedReader(new InputStreamReader((new FileInputStream(pubFile))))) {
