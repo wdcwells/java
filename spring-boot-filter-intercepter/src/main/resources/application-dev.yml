@@ -8,3 +8,5 @@ spring:
   http:
     multipart:
       max-file-size: 5MB
+file:
+  rootLocation: /tmp/upload-dir-test

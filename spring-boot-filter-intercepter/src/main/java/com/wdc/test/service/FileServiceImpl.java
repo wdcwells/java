@@ -33,7 +33,7 @@ public class FileServiceImpl implements FileService {
                         "Cannot store file with relative path outside current directory "
                                 + filename);
             }
-            if ((rootPath = Paths.get(rootLocation)).toFile().exists()) {
+            if (!(rootPath = Paths.get(rootLocation)).toFile().exists()) {
                 init(rootPath);
             }
             Path resolvedPath = rootPath.resolve(DateTimeFormatter.ofPattern("yyyy_MM_dd_HH_mm_ss_").format(LocalDateTime.now()) + filename);
