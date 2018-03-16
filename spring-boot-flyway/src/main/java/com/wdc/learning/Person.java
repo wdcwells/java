@@ -16,39 +16,49 @@
 
 package com.wdc.learning;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.SequenceGenerator;
+import javax.persistence.*;
 
 @Entity
 public class Person {
-	@Id
-	@SequenceGenerator(name="person_generator", sequenceName="person_sequence", allocationSize = 1)
-	@GeneratedValue(generator = "person_generator")
-	private Long id;
-	private String firstName;
-	private String lastName;
+    @Id
+    @SequenceGenerator(name = "person_generator", sequenceName = "person_sequence", allocationSize = 1)
+    @GeneratedValue(generator = "person_generator")
+    private Long id;
+    private String firstName;
+    private String lastName;
 
-	public String getFirstName() {
-		return this.firstName;
-	}
+    @Basic(fetch = FetchType.LAZY)
+    @Column(length = 65535)
+    //blob bug
+    private byte[] testBlob;
 
-	public void setFirstName(String firstName) {
-		this.firstName = firstName;
-	}
+    public String getFirstName() {
+        return this.firstName;
+    }
 
-	public String getLastName() {
-		return this.lastName;
-	}
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
+    }
 
-	public void setLastName(String lastname) {
-		this.lastName = lastname;
-	}
+    public String getLastName() {
+        return this.lastName;
+    }
 
-	@Override
-	public String toString() {
-		return "Person [firstName=" + this.firstName + ", lastName=" + this.lastName
-				+ "]";
-	}
+    public void setLastName(String lastname) {
+        this.lastName = lastname;
+    }
+
+    public byte[] getTestBlob() {
+        return testBlob;
+    }
+
+    public void setTestBlob(byte[] testBlob) {
+        this.testBlob = testBlob;
+    }
+
+    @Override
+    public String toString() {
+        return "Person [firstName=" + this.firstName + ", lastName=" + this.lastName
+                + "]";
+    }
 }

@@ -34,6 +34,11 @@ public class SpringBootFlywayApplication {
 
 			@Override
 			public void run(String... args) throws Exception {
+				Person person = new Person();
+				person.setFirstName("w");
+				person.setLastName("dc");
+				person.setTestBlob("abc".getBytes());
+				repository.save(person);
 				System.err.println(repository.findAll());
 			}
 
