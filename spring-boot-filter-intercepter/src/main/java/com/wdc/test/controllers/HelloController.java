@@ -1,13 +1,12 @@
 package com.wdc.test.controllers;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.wdc.test.config.RsaConfig;
 import com.wdc.test.utils.CodecUtil;
 import com.wdc.test.utils.SignUtil;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -38,5 +37,10 @@ public class HelloController {
         data.put("sign",
                 new String(CodecUtil.base64Encode(SignUtil.rsaSign(SignUtil.sortedSign(data).getBytes(), rsaConfig.getPriKey(), md5WithRSA))));
         return data;
+    }
+
+    @PostMapping("obj")
+    Object postHelloObj(@RequestBody ObjectNode objectNode) {
+        return objectNode;
     }
 }
