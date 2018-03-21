@@ -137,6 +137,10 @@ public class CodecUtil {
         return aesGenKey(null, null);
     }
 
+    public static SecretKey aesGenKey(byte[] password) {
+        return aesGenKey(password, null);
+    }
+
     private static SecretKey aesGenKey(byte[] seed, String path) {
         try {
             KeyGenerator aes = KeyGenerator.getInstance(AlGRITHM_AES);
@@ -203,23 +207,26 @@ public class CodecUtil {
     }
 
     private static String readKeyFromFile(String file) {
-        File pubFile = new File(file);
-        if (pubFile.exists()) {
-            try (BufferedReader br = new BufferedReader(new InputStreamReader((new FileInputStream(pubFile))))) {
-                String readLine = null;
-                StringBuilder sb = new StringBuilder();
-                while ((readLine = br.readLine()) != null) {
-                    if (readLine.charAt(0) == '-') {
-                        continue;
-                    } else {
-                        sb.append(readLine);
+        boolean classpathFile = false;
+        if (file.startsWith("classpath:")) {
+            classpathFile = true;
+        }
+        try (BufferedReader br = new BufferedReader(new InputStreamReader
+                (classpathFile ? CodecUtil.class.getResourceAsStream(file.substring(10))
+                        : (new FileInputStream(new File(file)))))) {
+            String readLine = null;
+            StringBuilder sb = new StringBuilder();
+            while ((readLine = br.readLine()) != null) {
+                if (readLine.charAt(0) == '-') {
+                    continue;
+                } else {
+                    sb.append(readLine);
 //                        sb.append('\r');//bug 导致base64解码失败
-                    }
                 }
-                return sb.toString();
-            } catch (Exception e) {
-                e.printStackTrace();
             }
+            return sb.toString();
+        } catch (Exception e) {
+            e.printStackTrace();
         }
         return null;
     }
