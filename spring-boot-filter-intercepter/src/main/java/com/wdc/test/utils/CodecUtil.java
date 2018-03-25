@@ -149,7 +149,7 @@ public class CodecUtil {
             if (null != seed && seed.length > 0) {
                 random.setSeed(seed);
             }
-            aes.init(random);
+            aes.init(128, random);//要求密钥长度为128
             SecretKey secretKey = aes.generateKey();
             if (null != path && path.trim().length() > 0) {
                 aesStoreKeyToFile(secretKey, path);
