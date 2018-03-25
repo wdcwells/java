@@ -21,8 +21,9 @@ import java.util.Base64;
 
 public class CodecUtil {
     //    private static final Path DEFAULT_AES_KEY_PATH = Paths.get(CodecUtil.class.getResource("/").getPath(), "aes.key").toAbsolutePath();
-    private static final String AlGRITHM_AES = "AES";
-    private static final String ALGRITHM_RSA = "RSA";
+    private static final String AES_KEY_ALGORITHM = "AES";
+    private static final String RSA_CIPER_ALGRITHM = "RSA";
+    private static final String AES_CIPER_ALGRITHM = "AES/ECB/PKCS5Padding";
 
     public static void main(String[] args) {
         RSAPublicKey publicKey = rsaLoadPubFromFile("/Users/wdc/Develop/Tools/Rsa/rsa_public_key.pem");
@@ -62,7 +63,7 @@ public class CodecUtil {
 
     public static byte[] rsaEncrypt(Key key, byte[] text) {
         try {
-            Cipher cipher = Cipher.getInstance(ALGRITHM_RSA);
+            Cipher cipher = Cipher.getInstance(RSA_CIPER_ALGRITHM);
             cipher.init(Cipher.ENCRYPT_MODE, key);
             return cipher.doFinal(text);
         } catch (Exception e) {
@@ -73,7 +74,7 @@ public class CodecUtil {
 
     public static byte[] rsaDecrypt(Key key, byte[] text) {
         try {
-            Cipher cipher = Cipher.getInstance(ALGRITHM_RSA);
+            Cipher cipher = Cipher.getInstance(RSA_CIPER_ALGRITHM);
             cipher.init(Cipher.DECRYPT_MODE, key);
             return cipher.doFinal(text);
         } catch (Exception e) {
@@ -100,7 +101,7 @@ public class CodecUtil {
 
     private static byte[] aesCrypt(byte[] content, Key key, int crypt) {
         try {
-            Cipher cipher = Cipher.getInstance(AlGRITHM_AES);
+            Cipher cipher = Cipher.getInstance(AES_CIPER_ALGRITHM);
             cipher.init(crypt, key);
             return cipher.doFinal(content);
         } catch (Exception e) {
@@ -143,8 +144,8 @@ public class CodecUtil {
 
     private static SecretKey aesGenKey(byte[] seed, String path) {
         try {
-            KeyGenerator aes = KeyGenerator.getInstance(AlGRITHM_AES);
-            SecureRandom random = new SecureRandom();
+            KeyGenerator aes = KeyGenerator.getInstance(AES_KEY_ALGORITHM);
+            SecureRandom random = SecureRandom.getInstance("SHA1PRNG");//指明后 每次生成密码一样
             if (null != seed && seed.length > 0) {
                 random.setSeed(seed);
             }
@@ -174,7 +175,7 @@ public class CodecUtil {
         if (null != path && path.trim().length() > 0) {
             try {
                 byte[] bytes = Files.readAllBytes(Paths.get(path));
-                secretKeySpec = new SecretKeySpec(bytes, AlGRITHM_AES);
+                secretKeySpec = new SecretKeySpec(bytes, AES_KEY_ALGORITHM);
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -185,7 +186,7 @@ public class CodecUtil {
     private static RSAPublicKey rsaDecodePubKey(String pubKey) {
         try {
             byte[] base64Key = base64Decode(pubKey.getBytes());
-            KeyFactory rsa = KeyFactory.getInstance(ALGRITHM_RSA);
+            KeyFactory rsa = KeyFactory.getInstance(RSA_CIPER_ALGRITHM);
             X509EncodedKeySpec keySpec = new X509EncodedKeySpec(base64Key);
             return (RSAPublicKey) rsa.generatePublic(keySpec);
         } catch (Exception e) {
@@ -197,7 +198,7 @@ public class CodecUtil {
     private static RSAPrivateKey rsaDecodePKCS8PriKey(String priKey) {
         try {
             byte[] base64Key = base64Decode(priKey.getBytes());
-            KeyFactory rsa = KeyFactory.getInstance(ALGRITHM_RSA);
+            KeyFactory rsa = KeyFactory.getInstance(RSA_CIPER_ALGRITHM);
             PKCS8EncodedKeySpec keySpec = new PKCS8EncodedKeySpec(base64Key);
             return (RSAPrivateKey) rsa.generatePrivate(keySpec);
         } catch (Exception e) {
