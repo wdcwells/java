@@ -145,7 +145,7 @@ public class CodecUtil {
     private static SecretKey aesGenKey(byte[] seed, String path) {
         try {
             KeyGenerator aes = KeyGenerator.getInstance(AES_KEY_ALGORITHM);
-            SecureRandom random = SecureRandom.getInstance("SHA1PRNG");//指明后 每次生成密码一样
+            SecureRandom random = SecureRandom.getInstance("SHA1PRNG");//此算法可保证，在setSeed之后 每次生成随机数序列一样
             if (null != seed && seed.length > 0) {
                 random.setSeed(seed);
             }
