@@ -30,5 +30,6 @@
         <module>spring-boot-jsp</module>
         <module>spring-boot-shiro</module>
         <module>spring-boot-filter-intercepter</module>
+        <module>spring-boot-dubbo</module>
     </modules>
 </project>
