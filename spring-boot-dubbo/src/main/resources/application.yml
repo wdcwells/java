@@ -1,0 +1,19 @@
+spring:
+  dubbo:
+    application:
+      name: test
+      registries:
+        - address: zookeeper://127.0.0.1:2181
+          register: true
+          subscribe: false
+          check: true
+        - address: zookeeper://172.16.113.208:2181
+          register: false
+          subscribe: true
+          check: true
+    base-package: com.weiyan.cardloan
+    protocol:
+      name: dubbo
+      port: 20990
+server:
+  port: 9090
