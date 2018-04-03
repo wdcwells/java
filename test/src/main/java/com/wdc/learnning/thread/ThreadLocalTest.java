@@ -36,6 +36,7 @@ public class ThreadLocalTest {
         System.out.println(test.getObj());
 
         Thread thread = new Thread(() -> {
+            System.out.println(obj.getName());//本线程没有set值进去，所以为null
             obj.setName("wqh");
             test.setObj(obj);
             System.out.println(test.getObj());
