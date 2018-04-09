@@ -1,21 +1,31 @@
 package com.wdc.test;
 
 import com.wdc.test.interceptors.HelloInterceptor;
+import com.wdc.test.utils.JsonUtil;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.web.servlet.ServletComponentScan;
 import org.springframework.context.annotation.Bean;
-import org.springframework.core.task.AsyncListenableTaskExecutor;
+import org.springframework.core.MethodParameter;
+import org.springframework.http.MediaType;
 import org.springframework.http.client.SimpleClientHttpRequestFactory;
+import org.springframework.http.converter.HttpMessageConverter;
+import org.springframework.http.server.ServerHttpRequest;
+import org.springframework.http.server.ServerHttpResponse;
+import org.springframework.http.server.ServletServerHttpRequest;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.web.client.AsyncRestTemplate;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
-import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurationSupport;
+import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter;
+import org.springframework.web.servlet.mvc.method.annotation.ResponseBodyAdvice;
+
+import java.util.Collections;
 
 @SpringBootApplication
 @ServletComponentScan
-public class FilterIntercepterMain extends WebMvcConfigurerAdapter {
+public class FilterIntercepterMain extends WebMvcConfigurationSupport {
     public static void main(String[] args) {
         SpringApplication.run(FilterIntercepterMain.class, args);
     }
@@ -23,6 +33,31 @@ public class FilterIntercepterMain extends WebMvcConfigurerAdapter {
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
         registry.addInterceptor(new HelloInterceptor()).addPathPatterns("/hello/*");
+    }
+    @Bean
+    public RequestMappingHandlerAdapter requestMappingHandlerAdapter() {
+        // Create or delegate to "super" to create and
+        // customize properties of RequestMappingHandlerAdapter
+        RequestMappingHandlerAdapter adapter = super.requestMappingHandlerAdapter();
+        adapter.setResponseBodyAdvice(Collections.singletonList(new ResponseBodyAdvice<Object>() {
+
+            @Override
+            public boolean supports(MethodParameter returnType, Class<? extends HttpMessageConverter<?>> converterType) {
+                return true;
+            }
+
+            @Override
+            public Object beforeBodyWrite(Object body, MethodParameter returnType, MediaType selectedContentType, Class<? extends HttpMessageConverter<?>> selectedConverterType, ServerHttpRequest request, ServerHttpResponse response) {
+                ServletServerHttpRequest req = (ServletServerHttpRequest) request;
+                System.out.println(request.getURI().getPath());
+                System.out.println(JsonUtil.toJson(body));
+                return body;
+            }
+        }));
+//        List<HandlerMethodReturnValueHandler> valueHandlers = adapter.getCustomReturnValueHandlers();
+//        valueHandlers.add(null);
+//        adapter.setCustomReturnValueHandlers(valueHandlers);
+        return adapter;
     }
 
     @Bean
