@@ -13,6 +13,7 @@ import static org.apache.commons.lang3.StringUtils.defaultIfBlank;
  *
  */
 public class RequestResult implements Serializable {
+
 	public static int CODE_OK = StatusCode.CODE_OK;
 	public static int CODE_ERROR = StatusCode.CODE_ERROR;
 

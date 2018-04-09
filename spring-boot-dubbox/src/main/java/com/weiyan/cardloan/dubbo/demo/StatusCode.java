@@ -2,6 +2,7 @@ package com.weiyan.cardloan.dubbo.demo;
 
 public class StatusCode {
 
+
 	public static int CODE_OK = 0;
 	public static int CODE_ERROR = -1;
 	//未知错误
