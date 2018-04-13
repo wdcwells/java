@@ -32,5 +32,6 @@
         <module>spring-boot-filter-intercepter</module>
         <module>spring-boot-dubbox</module>
         <module>spring-boot-dubbo</module>
+        <module>jdbc</module>
     </modules>
 </project>
