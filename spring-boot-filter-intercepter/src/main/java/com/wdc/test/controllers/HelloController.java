@@ -6,8 +6,12 @@ import com.wdc.test.config.RsaConfig;
 import com.wdc.test.utils.CodecUtil;
 import com.wdc.test.utils.SignUtil;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -39,8 +43,65 @@ public class HelloController {
         return data;
     }
 
-    @PostMapping("obj")
+    @PostMapping("jsonNode")
     Object postHelloObj(@RequestBody ObjectNode objectNode) {
         return objectNode;
     }
+
+    @PostMapping("pojo")
+    Object postPojo(@RequestBody PoJo poJo) {
+        return poJo;
+        //todo datetimeformatter
+    }
+
+    private static class PoJo {
+        private int id;
+        private String name;
+        private Date date = new Date();
+        private LocalDateTime localDateTime = LocalDateTime.now();
+        private Instant instant = Instant.now();
+
+        public int getId() {
+            return id;
+        }
+
+        public void setId(int id) {
+            this.id = id;
+        }
+
+        public String getName() {
+            return name;
+        }
+
+        public void setName(String name) {
+            this.name = name;
+        }
+
+        @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+        public Date getDate() {
+            return date;
+        }
+
+        public void setDate(Date date) {
+            this.date = date;
+        }
+
+        public Instant getInstant() {
+            return instant;
+        }
+
+        public void setInstant(Instant instant) {
+            this.instant = instant;
+        }
+
+        public LocalDateTime getLocalDateTime() {
+            return localDateTime;
+        }
+
+        public void setLocalDateTime(LocalDateTime localDateTime) {
+            this.localDateTime = localDateTime;
+        }
+    }
+
+
 }
