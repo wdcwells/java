@@ -2,3 +2,4 @@ logs
 *.class
 .idea
 *.iml
+**/target

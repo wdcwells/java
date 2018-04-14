@@ -15,19 +15,19 @@ import java.util.stream.Stream;
  * @date 2018/4/13
  */
 public class Jdbc {
-    @Option(name = "-u")
+    @Option(name = "-u", usage = "用户名")
     private String username = "root";
-    @Option(name = "-p")
+    @Option(name = "-p", usage = "密码")
     private String password = "mysql";
-    @Option(name = "-h")
+    @Option(name = "-h", usage = "服务器地址")
     private String host = "localhost";
-    @Option(name = "-pt")
+    @Option(name = "-pt", usage = "端口号")
     private String port = "3306";
-    @Option(name = "-db", required = true)
+    @Option(name = "-db", usage = "数据库", required = true)
     private String db;
-    @Option(name = "-sql", required = true)
+    @Option(name = "-sql", usage = "sql语句", required = true)
     private String sql;
-    @Option(name = "-w")
+    @Option(name = "-w", usage = "表格宽度")
     private int width = 20;
     // receives other command line parameters than options
     @Argument
