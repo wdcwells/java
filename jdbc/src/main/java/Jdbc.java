@@ -81,11 +81,11 @@ public class Jdbc {
                     rows.add(Stream.iterate(1, n -> n + 1).limit(columnCount)
                             .map(ci -> {
                                 try {
-                                    return rs.getString(ci);
+                                    return rs.getString(ci) == null ? "null" : rs.getString(ci);
                                 } catch (SQLException e) {
                                     e.printStackTrace();
                                 }
-                                return null;
+                                return "null";
                             }).collect(Collectors.toList()));
                 }
                 int cols = headers.size();
