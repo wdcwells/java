@@ -1,0 +1,5 @@
+logs
+*.class
+target
+*.iml
+.idea
