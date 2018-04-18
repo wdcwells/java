@@ -5,6 +5,7 @@ import org.kohsuke.args4j.*;
 
 import java.sql.*;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -25,6 +26,8 @@ public class Jdbc {
     private String port = "3306";
     @Option(name = "-db", usage = "数据库", required = true)
     private String db;
+    @Option(name = "-ba", usage = "批量操作")
+    private int bach = 0;
     @Option(name = "-sql", usage = "sql语句", required = true)
     private String sql;
     @Option(name = "-w", usage = "表格宽度")
@@ -57,7 +60,14 @@ public class Jdbc {
         try (Connection conn = DriverManager.getConnection(url, username, password);
              Statement statement = conn.createStatement()) {
             Class.forName("com.mysql.jdbc.Driver");
-            System.out.format("执行sql：%s\n执行结果：%s(%d)\n", sql, statement.execute(sql), statement.getUpdateCount());
+            if (bach > 0 || sql.contains(";")) {
+                for (String s : sql.split(";")) {
+                    statement.addBatch(s);
+                }
+                System.out.format("执行sql：%s\n执行结果：%s(%d)\n", sql, Arrays.toString(statement.executeBatch()), statement.getUpdateCount());
+            } else {
+                System.out.format("执行sql：%s\n执行结果：%s(%d)\n", sql, statement.execute(sql), statement.getUpdateCount());
+            }
             ResultSet rs = statement.getResultSet();
             if (null != rs) {
                 List<String> headers = Collections.emptyList();
