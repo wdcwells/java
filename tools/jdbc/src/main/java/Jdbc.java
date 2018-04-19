@@ -66,7 +66,7 @@ public class Jdbc {
              Statement statement = conn.createStatement()) {
             Class.forName("com.mysql.jdbc.Driver");
             if (console) {
-                System.out.print("请输入sql，支持批量操作:\n>");
+                System.out.print("请输入sql，支持批量操作:\nmysql>");
                 try (BufferedReader bf = new BufferedReader(new InputStreamReader(System.in))) {
                     while ((sql = bf.readLine()) != null) {
                         sql = sql.trim();
@@ -75,9 +75,14 @@ public class Jdbc {
                             setWidth(Integer.valueOf(sql.substring(9)));
                             continue;
                         }
-                        execSql(statement, sql);
+                        try {
+                            execSql(statement, sql);
+                        } catch (SQLException e) {
+                            System.err.println(e.getMessage());
+                            System.out.println("请输入正确的sql！！！！");
+                        }
                         System.out.println("======================================================================================================================================================");
-                        System.out.print("继续输入sql:\n>");
+                        System.out.print("mysql>");
                     }
                 } catch (IOException e) {
                     e.printStackTrace();
@@ -91,13 +96,14 @@ public class Jdbc {
     }
 
     private void execSql(Statement statement, String sql) throws SQLException {
-        if (bach || sql.contains(";")) {
-            for (String s : sql.split(";")) {
+        String[] split = sql.split(";");
+        if (split.length > 1) {
+            for (String s : split) {
                 statement.addBatch(s);
             }
             System.out.format("执行sql：%s\n执行结果：%s(%d)\n", sql, Arrays.toString(statement.executeBatch()), statement.getUpdateCount());
         } else {
-            System.out.format("执行sql：%s\n执行结果：%s(%d)\n", sql, statement.execute(sql), statement.getUpdateCount());
+            System.out.format("执行sql：%s\n执行结果：%s(%d)\n", split[0], statement.execute(split[0]), statement.getUpdateCount());
         }
         printRs(statement);
     }
