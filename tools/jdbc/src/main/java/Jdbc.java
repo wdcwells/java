@@ -3,6 +3,9 @@ import io.bretty.console.table.ColumnFormatter;
 import io.bretty.console.table.Table;
 import org.kohsuke.args4j.*;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -16,22 +19,24 @@ import java.util.stream.Stream;
  * @date 2018/4/13
  */
 public class Jdbc {
-    @Option(name = "-u", usage = "用户名")
+    @Option(name = "-user", usage = "用户名")
     private String username = "root";
-    @Option(name = "-p", usage = "密码")
+    @Option(name = "-pwd", usage = "密码")
     private String password = "mysql";
-    @Option(name = "-h", usage = "服务器地址")
+    @Option(name = "-host", usage = "服务器地址")
     private String host = "localhost";
-    @Option(name = "-pt", usage = "端口号")
+    @Option(name = "-port", usage = "端口号")
     private String port = "3306";
     @Option(name = "-db", usage = "数据库", required = true)
     private String db;
-    @Option(name = "-ba", usage = "批量操作")
-    private int bach = 0;
-    @Option(name = "-sql", usage = "sql语句", required = true)
-    private String sql;
-    @Option(name = "-w", usage = "表格宽度")
+    @Option(name = "-bach", usage = "批量操作")
+    private boolean bach = false;
+    @Option(name = "-sql", usage = "sql语句")
+    private String sql = "select version()";
+    @Option(name = "-width", usage = "表格宽度")
     private int width = 20;
+    @Option(name = "-console", usage = "打开console")
+    private boolean console = false;
     // receives other command line parameters than options
     @Argument
     private List<String> arguments = new ArrayList<>();
@@ -43,32 +48,62 @@ public class Jdbc {
     private void doMain(String[] args) {
         CmdLineParser parser = new CmdLineParser(this, ParserProperties.defaults());
         try {
-            System.out.println("解析参数…………");
+            System.out.println("解析命令行参数…………");
             parser.parseArgument(args);
-            System.out.println("其他参数…………");
+            System.out.println("其他命令行参数…………");
             arguments.stream().forEach(System.out::println);
         } catch (CmdLineException e) {
             System.out.println("参数有误：" + e.getMessage());
             parser.printUsage(System.err);
             return;
         }
-        doSql(host, port, db, username, password, sql, width);
+        doSql();
     }
 
-    private void doSql(String host, String port, String db, String username, String password, String sql, int width) {
+    private void doSql() {
         String url = String.format("jdbc:mysql://%s:%s/%s?useUnicode=true&characterEncoding=utf8&useSSL=false", host, port, db);
         try (Connection conn = DriverManager.getConnection(url, username, password);
              Statement statement = conn.createStatement()) {
             Class.forName("com.mysql.jdbc.Driver");
-            if (bach > 0 || sql.contains(";")) {
-                for (String s : sql.split(";")) {
-                    statement.addBatch(s);
+            if (console) {
+                System.out.print("请输入sql，支持批量操作:\n>");
+                try (BufferedReader bf = new BufferedReader(new InputStreamReader(System.in))) {
+                    while ((sql = bf.readLine()) != null) {
+                        sql = sql.trim();
+                        if (sql.equals("exit")) break;
+                        if (sql.startsWith("setWidth:")) {
+                            setWidth(Integer.valueOf(sql.substring(9)));
+                            continue;
+                        }
+                        execSql(statement, sql);
+                        System.out.println("======================================================================================================================================================");
+                        System.out.print("继续输入sql:\n>");
+                    }
+                } catch (IOException e) {
+                    e.printStackTrace();
                 }
-                System.out.format("执行sql：%s\n执行结果：%s(%d)\n", sql, Arrays.toString(statement.executeBatch()), statement.getUpdateCount());
             } else {
-                System.out.format("执行sql：%s\n执行结果：%s(%d)\n", sql, statement.execute(sql), statement.getUpdateCount());
+                execSql(statement, sql);
             }
-            ResultSet rs = statement.getResultSet();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void execSql(Statement statement, String sql) throws SQLException {
+        if (bach || sql.contains(";")) {
+            for (String s : sql.split(";")) {
+                statement.addBatch(s);
+            }
+            System.out.format("执行sql：%s\n执行结果：%s(%d)\n", sql, Arrays.toString(statement.executeBatch()), statement.getUpdateCount());
+        } else {
+            System.out.format("执行sql：%s\n执行结果：%s(%d)\n", sql, statement.execute(sql), statement.getUpdateCount());
+        }
+        printRs(statement);
+    }
+
+    private void printRs(Statement statement) throws SQLException {
+        try (ResultSet rs = statement.getResultSet()) {
             if (null != rs) {
                 List<String> headers = Collections.emptyList();
                 List<List<String>> rows = new ArrayList<>(50);
@@ -108,14 +143,11 @@ public class Jdbc {
                 String[] tHeader = headers.toArray(new String[0]);
                 ColumnFormatter<String> text = ColumnFormatter.text(Alignment.LEFT, width);
                 System.out.println(Table.of(tHeader, data, text));
-                rs.close();
             }
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        } catch (Exception e) {
-            e.printStackTrace();
         }
+    }
+
+    public void setWidth(int width) {
+        this.width = width;
     }
 }

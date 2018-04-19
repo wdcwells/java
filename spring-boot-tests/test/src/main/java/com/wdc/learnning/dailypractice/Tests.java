@@ -30,4 +30,9 @@ public class Tests {
         System.out.println("总经过:" + totalLength);
 
     }
+
+    @Test
+    public void test3() {
+        System.out.println("setWidth:1".substring(9));
+    }
 }
