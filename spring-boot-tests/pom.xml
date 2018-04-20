@@ -27,6 +27,7 @@
         <module>spring-boot-dubbox</module>
         <module>spring-boot-dubbo</module>
         <module>test</module>
+        <module>spring-boot-mail</module>
     </modules>
 
 </project>
