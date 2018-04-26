@@ -28,6 +28,7 @@
         <module>spring-boot-dubbo</module>
         <module>test</module>
         <module>spring-boot-mail</module>
+        <module>spring-boot-data-jpa</module>
     </modules>
 
 </project>
