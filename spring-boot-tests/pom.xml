@@ -11,6 +11,12 @@
 
     <artifactId>spring-boot-tests</artifactId>
     <packaging>pom</packaging>
+    <dependencies>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter</artifactId>
+        </dependency>
+    </dependencies>
 
     <modules>
         <module>spring-boot-rest-security</module>
@@ -24,7 +30,6 @@
         <module>spring-boot-jsp</module>
         <module>spring-boot-shiro</module>
         <module>spring-boot-filter-intercepter</module>
-        <module>spring-boot-dubbox</module>
         <module>spring-boot-dubbo</module>
         <module>test</module>
         <module>spring-boot-mail</module>
