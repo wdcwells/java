@@ -32,4 +32,18 @@ public class ComputeTest {
         subList2.forEach(System.out::print);
 
     }
+
+    @Test
+    public void test1() {
+        System.out.println(-7 / 2);
+        System.out.println(-7 % 2);
+        System.out.println(7 % -2);
+        System.out.println(7 / -2);
+
+        StringBuilder builder = new StringBuilder();
+        builder.append((260965+40421+0) / 100.0);
+        builder.append("\n");
+        builder.append(260965 / 100.0 + 40421 / 100.0 + 0/100.0);
+        System.out.println(builder);
+    }
 }
