@@ -6,9 +6,9 @@ import javax.servlet.*;
 import javax.servlet.annotation.WebFilter;
 import java.io.IOException;
 
-@Order(1)
-@WebFilter(filterName = "first", urlPatterns = "/pipe/*")
-public class FirstFilter implements Filter{
+@Order(2)
+@WebFilter(filterName = "hello", urlPatterns = "/hello/*")
+public class HelloFilter implements Filter{
     @Override
     public void init(FilterConfig filterConfig) throws ServletException {
 
@@ -16,9 +16,9 @@ public class FirstFilter implements Filter{
 
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
-        System.out.println("fist filter before");
+        System.out.println("hello filter before");
         chain.doFilter(request, response);
-        System.out.println("fist filter after");
+        System.out.println("hello filter after");
     }
 
     @Override

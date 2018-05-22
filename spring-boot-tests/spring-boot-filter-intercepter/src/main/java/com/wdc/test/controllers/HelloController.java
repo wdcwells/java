@@ -22,6 +22,11 @@ public class HelloController {
     @Autowired
     private RsaConfig rsaConfig;
 
+    @GetMapping("url")
+    String getUrl(@RequestParam String url) {
+        return url;
+    }
+
     @GetMapping("txt")
     String getHelloMsg() {
         return "hello";
@@ -52,6 +57,33 @@ public class HelloController {
     Object postPojo(@RequestBody PoJo poJo) {
         return poJo;
         //todo datetimeformatter
+    }
+
+    @PostMapping("simple")
+    Simple postSimple(Simple simple) {
+        return simple;
+    }
+
+
+    private class Simple {
+        private Integer id;
+        private int age;
+
+        public Integer getId() {
+            return id;
+        }
+
+        public void setId(Integer id) {
+            this.id = id;
+        }
+
+        public int getAge() {
+            return age;
+        }
+
+        public void setAge(int age) {
+            this.age = age;
+        }
     }
 
     private static class PoJo {

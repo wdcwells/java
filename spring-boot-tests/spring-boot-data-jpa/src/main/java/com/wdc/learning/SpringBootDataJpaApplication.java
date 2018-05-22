@@ -8,6 +8,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.scheduling.annotation.Async;
+import org.springframework.transaction.annotation.Transactional;
 
 @SpringBootApplication
 public class SpringBootDataJpaApplication implements CommandLineRunner {
@@ -24,14 +26,25 @@ public class SpringBootDataJpaApplication implements CommandLineRunner {
 	@Override
 	public void run(String... args) throws Exception {
 		testTransactional();
+		testAsyncFind();
 //		System.exit(0);
 	}
 
+	@Async
+	public void testAsyncFind() {
+		System.out.println(tmpUserRepository.count());
+		System.out.println(customerRepository.count());
+		System.out.println(customerRepository.findOne(1L).getLastName());
+		throw new RuntimeException("error");
+	}
+
+	@Transactional
 	public void testTransactional() {
+		Customer jack = customerRepository.findOne(1L);
+		jack.setLastName("Bauer1");
+		customerRepository.save(jack);
 		saveCustomer();
 		saveTmpUser();
-		System.out.println(customerRepository.findAll().get(0));
-		System.out.println(tmpUserRepository.findAll().get(0));
 	}
 
 	public void saveTmpUser() {
