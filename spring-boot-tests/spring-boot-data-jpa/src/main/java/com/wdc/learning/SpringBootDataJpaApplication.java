@@ -11,6 +11,8 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Collections;
+
 @SpringBootApplication
 public class SpringBootDataJpaApplication implements CommandLineRunner {
 
@@ -25,9 +27,14 @@ public class SpringBootDataJpaApplication implements CommandLineRunner {
 
 	@Override
 	public void run(String... args) throws Exception {
-		testTransactional();
-		testAsyncFind();
+//		testTransactional();
+//		testAsyncFind();
+		testUpdateField();
 //		System.exit(0);
+	}
+
+	private void testUpdateField() {
+		customerRepository.updateLastNameById(Collections.singletonList(1L), "name");
 	}
 
 	@Async
