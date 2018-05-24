@@ -27,9 +27,10 @@ public class SpringBootDataJpaApplication implements CommandLineRunner {
 
 	@Override
 	public void run(String... args) throws Exception {
-//		testTransactional();
-//		testAsyncFind();
-		testUpdateField();
+		testAsyncFind();
+		testTransactional();
+		System.out.println("paowanri");
+//		testUpdateField();
 //		System.exit(0);
 	}
 
@@ -42,17 +43,20 @@ public class SpringBootDataJpaApplication implements CommandLineRunner {
 		System.out.println(tmpUserRepository.count());
 		System.out.println(customerRepository.count());
 		System.out.println(customerRepository.findOne(1L).getLastName());
-		throw new RuntimeException("error");
+//		throw new RuntimeException("error");
 	}
 
+	@Async
 	@Transactional
-	public void testTransactional() {
+	public void testTransactional() throws InterruptedException {
+		Thread.sleep(10 * 1000);
 		Customer jack = customerRepository.findOne(1L);
 		jack.setLastName("Bauer1");
 		customerRepository.save(jack);
 		saveCustomer();
 		saveTmpUser();
 	}
+
 
 	public void saveTmpUser() {
 		TmpUser tmpUser = new TmpUser();
