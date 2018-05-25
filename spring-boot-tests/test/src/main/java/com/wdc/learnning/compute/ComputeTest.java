@@ -46,4 +46,14 @@ public class ComputeTest {
         builder.append(260965 / 100.0 + 40421 / 100.0 + 0/100.0);
         System.out.println(builder);
     }
+
+    @Test
+    public void test2() {
+        byte min = (byte) 0b10000000;//反码：11111111，补码：10000000
+        byte max = (byte) 0b01111111;//补码：01111111
+        byte x = (byte) 0b11111111;//补码：01111111
+        System.out.println(min);
+        System.out.println(max);
+        System.out.println(x);
+    }
 }
