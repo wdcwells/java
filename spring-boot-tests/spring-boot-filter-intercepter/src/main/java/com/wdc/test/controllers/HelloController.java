@@ -1,12 +1,12 @@
 package com.wdc.test.controllers;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.wdc.test.config.RsaConfig;
 import com.wdc.test.utils.CodecUtil;
 import com.wdc.test.utils.SignUtil;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.Instant;
@@ -89,6 +89,7 @@ public class HelloController {
     private static class PoJo {
         private int id;
         private String name;
+        @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
         private Date date = new Date();
         private LocalDateTime localDateTime = LocalDateTime.now();
         private Instant instant = Instant.now();
@@ -109,7 +110,6 @@ public class HelloController {
             this.name = name;
         }
 
-        @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
         public Date getDate() {
             return date;
         }

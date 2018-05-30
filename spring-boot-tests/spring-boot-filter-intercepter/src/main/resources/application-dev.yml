@@ -1,6 +1,6 @@
 #tomcat config
 server:
-  port: 8888
+  port: 6666
 rsa:
   public: /Users/wdc/Develop/Tools/Rsa/rsa_public_key.pem
   private: /Users/wdc/Develop/Tools/Rsa/pkcs8_rsa_private_key.pem
