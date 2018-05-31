@@ -27,6 +27,7 @@
         <module>test</module>
         <module>spring-boot-mail</module>
         <module>spring-boot-data-jpa</module>
+        <module>spring-boot-retry</module>
     </modules>
 
 </project>
