@@ -1,4 +1,4 @@
-package com.wdc.learnning.config;
+package com.wdc.learning.config;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
