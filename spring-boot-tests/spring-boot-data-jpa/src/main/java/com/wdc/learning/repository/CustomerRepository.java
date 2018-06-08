@@ -20,4 +20,6 @@ public interface CustomerRepository extends JpaRepository<Customer, Long> {
     @Modifying
     @Query("update Customer a set a.lastName = ?2 where a.id in ?1")
     void updateLastNameById(List<Long> id, String lastName);
+
+    void deleteById(Long id);
 }

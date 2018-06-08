@@ -5,7 +5,6 @@ import com.wdc.learning.entity.TmpUser;
 import com.wdc.learning.repository.CustomerRepository;
 import com.wdc.learning.repository.TmpUserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -21,12 +20,16 @@ public class HomeService {
     private CustomerRepository customerRepository;
     @Autowired
     private TmpUserRepository tmpUserRepository;
+    @Autowired
+    private AsyncService asyncService;
+    @Autowired
+    private TxHelperService txHelperService;
 
     public Customer findOne(Long id) {
         return customerRepository.findOne(id);
     }
 
-    @Async
+//    @Async
     public void testAsyncFind(){
         System.out.println(tmpUserRepository.count());
         System.out.println(customerRepository.count());
@@ -34,10 +37,10 @@ public class HomeService {
         throw new RuntimeException("error");
     }
 
-    @Async
+//    @Async
     @Transactional
-    public void testTransactional() throws InterruptedException {
-        Thread.sleep(10 * 1000);
+    public void testTransactional() throws Exception {
+        Thread.sleep(5 * 1000);
         Customer jack = customerRepository.findOne(1L);
         jack.setLastName("Bauer1");
         customerRepository.save(jack);
@@ -45,8 +48,18 @@ public class HomeService {
         saveTmpUser();
     }
 
+//    @Transactional
+    public void testRepoTx() {
+        txHelperService.txTestRepoTx(this);
+//        internalTestRepoTx();
+    }
 
-    public void saveTmpUser() {
+    public void internalTestRepoTx() {
+        testUpdateField();
+        customerRepository.deleteById(11L);
+    }
+
+    private void saveTmpUser() {
         TmpUser tmpUser = new TmpUser();
         tmpUser.setUserId("userId");
         tmpUser.setIdCard("123");
@@ -54,7 +67,7 @@ public class HomeService {
         tmpUserRepository.save(tmpUser);
     }
 
-    public void saveCustomer() {
+    private void saveCustomer() {
         Customer wqh = new Customer();
         wqh.setFirstName("w");
         wqh.setLastName("qh");
@@ -62,6 +75,7 @@ public class HomeService {
     }
 
     private void testUpdateField() {
-        customerRepository.updateLastNameById(Collections.singletonList(1L), "name");
+        customerRepository.updateLastNameById(Collections.singletonList(10L), "name");
     }
 }
+

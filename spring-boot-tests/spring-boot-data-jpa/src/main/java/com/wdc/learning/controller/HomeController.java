@@ -16,9 +16,10 @@ public class HomeController {
 
     @GetMapping
     String home() throws Exception{
-        homeService.testAsyncFind();
-        homeService.testTransactional();
-        System.out.println("paowanri");
+        homeService.testRepoTx();
+//        homeService.testAsyncFind();
+//        homeService.testTransactional();
+//        System.out.println("paowanri");
 //		homeService.testUpdateField();
         return "hello world";
     }
