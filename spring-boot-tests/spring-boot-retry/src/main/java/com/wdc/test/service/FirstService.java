@@ -21,7 +21,7 @@ public class FirstService {
 
     public int num() {
         try {
-//            return retryExample1();
+            System.out.println(retryExample1());
             return firstServiceRetry.retryExample2(this);
         } catch (Exception e) {
             return 0;
