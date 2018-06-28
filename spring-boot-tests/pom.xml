@@ -24,10 +24,10 @@
         <module>spring-boot-jsp</module>
         <module>spring-boot-shiro</module>
         <module>spring-boot-filter-intercepter</module>
-        <module>test</module>
         <module>spring-boot-mail</module>
         <module>spring-boot-data-jpa</module>
         <module>spring-boot-retry</module>
+        <module>spring-boot-elastic-job</module>
     </modules>
 
 </project>
