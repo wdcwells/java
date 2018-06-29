@@ -12,15 +12,15 @@ public class MyElasticJob implements SimpleJob {
         switch (context.getShardingItem()) {
             case 0:
                 // do something by sharding item 0
-                log.info("item0");
+                log.info(context.getShardingParameter());
                 break;
             case 1:
                 // do something by sharding item 1
-                log.info("item1");
+                log.info(context.getShardingParameter());
                 break;
             case 2:
                 // do something by sharding item 2
-                log.info("item2");
+                log.info(context.getShardingParameter());
                 break;
             // case n: ...
         }

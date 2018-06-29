@@ -14,5 +14,5 @@
     <reg:zookeeper id="regCenter" server-lists="localhost:2181" namespace="test-job" base-sleep-time-milliseconds="1000" max-sleep-time-milliseconds="3000" max-retries="3" />
 
     <!--configure job -->
-    <job:simple id="myElasticJob" class="com.wdc.test.task.MyElasticJob" registry-center-ref="regCenter" cron="0 0/1 * * * ?"   sharding-total-count="1" sharding-item-parameters="" />
+    <job:simple id="myElasticJob" class="com.wdc.test.task.MyElasticJob" registry-center-ref="regCenter" cron="0 0/1 * * * ?"   sharding-total-count="3" sharding-item-parameters="0=p1,1=p2,2=p3" overwrite="true" />
 </beans>
