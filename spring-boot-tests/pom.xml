@@ -28,6 +28,7 @@
         <module>spring-boot-data-jpa</module>
         <module>spring-boot-retry</module>
         <module>spring-boot-elastic-job</module>
+        <module>spring-boot-utils</module>
     </modules>
 
 </project>
