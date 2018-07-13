@@ -7,13 +7,14 @@ package com.wdc.study.test;
 public class UnicodeTest {
     public static void main(String[] args) {
         System.out.println("\\u2122=\u2122");
-//        System.out.println("\u005c"); error for input single"\"
+        //error for input single"\"
+        System.out.println("\\u005c");
 
-//        System.out.print("abc\nd");
-//        System.out.print("abc\rd");
+        System.out.print("abc\nd");
+        System.out.print("abc\rd");
 
-//        System.out.print("a\u000D \u000A");//CR LF
-//        System.out.print("b\u000D");//CR
-//        System.out.print("c\u000A");//LF
+        System.out.print("a\\u000D \\u000A");//CR LF
+        System.out.print("b\\u000D");//CR
+        System.out.print("c\\u000A");//LF
     }
 }
