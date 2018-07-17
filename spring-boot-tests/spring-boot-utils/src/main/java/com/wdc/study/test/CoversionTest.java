@@ -49,7 +49,7 @@ public class CoversionTest {
         System.out.println("23位无符号有效小数位：" + m + "(" + mDecimal + ")");
 
         int exponentReal = exponentDecimal - 127;
-        value += (mDecimal + 1) * Math.exp(exponentReal);
+        value += (mDecimal + 1) * Math.pow(2, exponentReal);
         System.out.println("真实值：" + value);
     }
 
