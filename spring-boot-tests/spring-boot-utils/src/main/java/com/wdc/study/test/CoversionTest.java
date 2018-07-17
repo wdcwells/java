@@ -11,6 +11,16 @@ public class CoversionTest {
 //        nonSfp();
 //        floatToInt();
         floatStoreDetail();
+//        floatMax();
+    }
+
+    private static void floatMax() {
+        System.out.println(Float.MAX_VALUE);
+        System.out.println(Integer.toBinaryString(Float.floatToIntBits(Float.MAX_VALUE)));
+        int h = (int) Math.pow(2, 23) - 1;
+        float m = (float) (h / Math.pow(10, Integer.toString(h).length()) + 1);
+        System.out.println(m);
+        System.out.println((float) (m * Math.pow(10, (Math.pow(2, 8) - 1 - 127))));
     }
 
     /**
@@ -26,7 +36,9 @@ public class CoversionTest {
      */
     private static void floatStoreDetail() {
         int value = 0;
-        String storeBits = Integer.toBinaryString(Float.floatToIntBits(2147483647f));
+        float fValue = 2147483647f;
+        System.out.println(fValue);
+        String storeBits = Integer.toBinaryString(Float.floatToIntBits(fValue));
         System.out.println(storeBits + "\n除去符号位，共" + storeBits.length() + "位");
         String exponentBits = storeBits.substring(0, 8);
         int exponentDecimal = Integer.parseUnsignedInt(exponentBits, 2);
