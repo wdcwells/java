@@ -9,10 +9,22 @@ public class ConversionTest {
 //        widdening();
 //        sfp();
 //        nonSfp();
-        floatToInt();
+//        floatToInt();
 //        floatStoreDetail();
 //        floatMaxCalculate();
 //        intToByte();
+        numberRange();
+    }
+
+    private static void numberRange() {//数量级差很大呀
+        //Integer.MAX_VALUE
+        System.out.println(2147483647.0);// 9
+        //Long.MAX_VALUE
+        System.out.println(9223372036854775807.0);// 18
+        System.out.println(Float.MIN_VALUE);// -45
+        System.out.println(Float.MAX_VALUE);// 38
+        System.out.println(Double.MIN_VALUE);// -324
+        System.out.println(Double.MAX_VALUE);// 308
     }
 
     /**
