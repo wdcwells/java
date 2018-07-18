@@ -9,10 +9,10 @@ public class ConversionTest {
 //        widdening();
 //        sfp();
 //        nonSfp();
-//        floatToInt();
+        floatToInt();
 //        floatStoreDetail();
 //        floatMaxCalculate();
-        intToByte();
+//        intToByte();
     }
 
     /**
@@ -67,18 +67,19 @@ public class ConversionTest {
         System.out.println("真实值：" + value);
     }
 
-    private strictfp static void floatToInt() {
-        System.out.println(Float.floatToIntBits(9f));//1091567616
-        System.out.println(Float.intBitsToFloat(9));//0
-        System.out.println(Integer.toBinaryString(1091567616));
-        float max = Float.MAX_VALUE;
-        System.out.println(max);
-
-        int iMax = (int) 2147483647f;
-        System.out.println(iMax);
-        System.out.println(Integer.toBinaryString(Float.floatToIntBits(2147483647f)));
-        System.out.println(Integer.MAX_VALUE);
-        System.out.println(Integer.toBinaryString(Integer.MAX_VALUE));
+    /**
+     * if the floating-point number is not an infinity, the floating-point value is
+     * rounded to an integer value V, rounding toward zero using IEEE 754 round-toward-zero mode
+     */
+    private static void floatToInt() {
+        float f1 = 1.1f;
+        float f2 = 1.8f;
+        System.out.println(f1);
+        System.out.println(f2);
+        int i1 = (int) f1;
+        int i2 = (int) f2;
+        System.out.println(i1);
+        System.out.println(i2);
     }
 
     private strictfp static void sfp() {
