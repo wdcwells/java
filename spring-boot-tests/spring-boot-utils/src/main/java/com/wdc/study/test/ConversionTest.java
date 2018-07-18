@@ -4,14 +4,28 @@ package com.wdc.study.test;
  * @author wdc
  * @date 2018/7/17
  */
-public class CoversionTest {
+public class ConversionTest {
     public static void main(String[] args) {
 //        widdening();
 //        sfp();
 //        nonSfp();
 //        floatToInt();
 //        floatStoreDetail();
-        floatMaxCalculate();
+//        floatMaxCalculate();
+        intToByte();
+    }
+
+    /**
+     * A narrowing conversion of a signed integer to an integral type T simply discards
+     * all but the n lowest order bits, where n is the number of bits used to represent type T.
+     * In addition to a possible loss of information about the magnitude of the numeric value,
+     * this may cause the sign of the resulting value to differ from the sign of the input value.
+     */
+    private static void intToByte() {
+        int i = 0b11111111;//narrowing lose sign
+        System.out.println(i);
+        byte b = (byte) i;
+        System.out.println(b);
     }
 
     private static void floatMaxCalculate() {
