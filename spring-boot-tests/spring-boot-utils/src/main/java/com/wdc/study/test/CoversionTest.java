@@ -10,17 +10,17 @@ public class CoversionTest {
 //        sfp();
 //        nonSfp();
 //        floatToInt();
-        floatStoreDetail();
-//        floatMax();
+//        floatStoreDetail();
+        floatMaxCalculate();
     }
 
-    private static void floatMax() {
+    private static void floatMaxCalculate() {
         System.out.println(Float.MAX_VALUE);
         System.out.println(Integer.toBinaryString(Float.floatToIntBits(Float.MAX_VALUE)));
-        int h = (int) Math.pow(2, 23) - 1;
-        float m = (float) (h / Math.pow(10, Integer.toString(h).length()) + 1);
+        //1111111011111111111111111111111
+        int m = (int) (Math.pow(2, 24) - 1);
         System.out.println(m);
-        System.out.println((float) (m * Math.pow(10, (Math.pow(2, 8) - 1 - 127))));
+        System.out.println((float) (m * Math.pow(2, (Math.pow(2, 8) - 1 - 1 - 127 - 23))));
     }
 
     /**
