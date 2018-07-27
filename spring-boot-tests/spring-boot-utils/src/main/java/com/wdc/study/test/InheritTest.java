@@ -21,4 +21,8 @@ public class InheritTest {
     public static void main(String[] args) throws ClassNotFoundException {
         new Inner().print();
     }
+
+    class SonClass extends Parent.SuperClass {
+
+    }
 }

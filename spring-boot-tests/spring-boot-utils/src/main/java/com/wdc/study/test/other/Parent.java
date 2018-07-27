@@ -14,4 +14,8 @@ public class Parent {
     }
 
 
+
+    public static class SuperClass {
+
+    }
 }
