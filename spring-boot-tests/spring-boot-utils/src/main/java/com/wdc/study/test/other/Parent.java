@@ -7,4 +7,11 @@ package com.wdc.study.test.other;
 public class Parent {
     int i = 10;
     protected String s = "string";
+    protected static String ss = "static string";
+
+    protected void m1() {
+        System.out.println("m1");
+    }
+
+
 }

@@ -8,13 +8,17 @@ import com.wdc.study.test.other.Parent;
  */
 public class InheritTest {
 
-    class Inner extends Parent {
+    static class Inner extends Parent {
+        protected String ss;
        void test() {
 //           System.out.println(i + s);
+       }
+       void print() {
+           System.out.println(s + "," + ss + "," + Parent.ss);
        }
     }
 
     public static void main(String[] args) throws ClassNotFoundException {
-
+        new Inner().print();
     }
 }
