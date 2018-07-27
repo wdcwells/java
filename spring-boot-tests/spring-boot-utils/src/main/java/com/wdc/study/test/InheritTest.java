@@ -13,4 +13,8 @@ public class InheritTest {
 //           System.out.println(i + s);
        }
     }
+
+    public static void main(String[] args) throws ClassNotFoundException {
+
+    }
 }
