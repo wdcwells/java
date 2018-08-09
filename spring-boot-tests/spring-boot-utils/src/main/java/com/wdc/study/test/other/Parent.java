@@ -18,4 +18,10 @@ public class Parent {
     public static class SuperClass {
 
     }
+
+    public static void main(String[] args) {
+
+    }
 }
+class TopLevelClassOfCompileUnit {}
+class TopLevelClass2OfCompileUnit {}
