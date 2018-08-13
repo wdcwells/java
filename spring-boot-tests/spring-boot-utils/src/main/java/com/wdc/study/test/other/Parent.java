@@ -27,6 +27,12 @@ public class Parent {
 
 
     public static class SuperClass {
+        public SuperClass() {
+            print3();
+        }
+        protected void print3() {
+            System.out.println("three");
+        }
 
     }
 

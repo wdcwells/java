@@ -27,10 +27,20 @@ public class InheritTest {
         System.out.println(ISon.i);
         System.out.println(IGrandSon.s);
         //endregion
+
+        //region constructor execute order
+        SonClass sonClass = new InheritTest().new SonClass();
+        sonClass.print3();
+        //endregion
     }
 
     class SonClass extends Parent.SuperClass {
+        int i = 2;
 
+        @Override
+        protected void print3() {
+            System.out.println(i);
+        }
     }
 
     interface ISon extends Parent.IParent {
