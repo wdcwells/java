@@ -5,9 +5,20 @@ package com.wdc.study.test.other;
  * @date 2018/7/25
  */
 public class Parent {
+    int i0;
     int i = 10;
+    int i1 = i1s();
+
+    private int i1s() {
+        return 20;
+    }
+
     protected String s = "string";
     protected static String ss = "static string";
+
+    public Parent() {
+        System.out.println(i0 + "\t" + i + "\t" + i1);//field initialized before constructor execute
+    }
 
     protected void m1() {
         System.out.println("m1");
