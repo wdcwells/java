@@ -22,6 +22,15 @@ public class Parent {
     public static void main(String[] args) {
 
     }
+
+    public interface IParent {
+        int i = 1, ii = test("ii", 2);
+
+        static int test(String ii, int i) {
+            System.out.println(ii + " is init for value:" + i);
+            return i;
+        }
+    }
 }
 class TopLevelClassOfCompileUnit {}
 class TopLevelClass2OfCompileUnit {}
