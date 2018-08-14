@@ -34,12 +34,12 @@ public class InheritTest {
         //endregion
     }
 
-    class SonClass extends Parent.SuperClass {
+    class SonClass extends Parent.SuperClass implements Parent.IParent {
         int i = 2;
 
         @Override
-        protected void print3() {
-            System.out.println(i);
+        protected void print3() {//通过不同路径继承的字段，需用Qualified name引用
+            System.out.println(i + "\t" + super.s + "\t" + Parent.IParent.s);
         }
     }
 

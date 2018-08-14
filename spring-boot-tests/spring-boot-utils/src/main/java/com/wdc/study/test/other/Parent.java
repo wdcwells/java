@@ -26,7 +26,8 @@ public class Parent {
 
 
 
-    public static class SuperClass {
+    public static class SuperClass implements ISuper {
+        public int s = 1;
         public SuperClass() {
             print3();
         }
@@ -36,12 +37,16 @@ public class Parent {
 
     }
 
+    public interface ISuper {
+        int s = 10;
+    }
+
     public static void main(String[] args) {
 
     }
 
     public interface IParent {
-        int i = 1, ii = test("ii", 2);
+        int i = 1, ii = test("ii", 2), s = 3;
 
         static int test(String ii, int i) {
             System.out.println(ii + " is init for value:" + i);
