@@ -51,7 +51,7 @@ public class CryptoUtil {
 
     //region algs
     public static final String AES_CIPER_ALG = "AES";
-    public static final String SECURE_RANDOM_ALG_DEFAULT = SecureRandomEnum.SHA1PRNG.name();
+    public static final String SECURE_RANDOM_ALG_FOR_SEED = SecureRandomEnum.SHA1PRNG.name();
     public static final int INIT_KEY_SIZE_DEFAULT = 128;
     //endregion
 
@@ -124,13 +124,13 @@ public class CryptoUtil {
         return genKey(keyAlg, secureAlg, null);
     }
 
-    public static SecretKey genKey(String keyAlg, String secureAlg, String seed) {
+    private static SecretKey genKey(String keyAlg, String secureAlg, String seed) {
         int initKeySize = defaultInitKeySize(keyAlg);
         try {
             KeyGenerator generator = KeyGenerator.getInstance(keyAlg);
             SecureRandom secureRandom;
             if (Objects.nonNull(seed) && seed.trim().length() > 0) {
-                secureRandom = SecureRandom.getInstance(SECURE_RANDOM_ALG_DEFAULT);
+                secureRandom = SecureRandom.getInstance(SECURE_RANDOM_ALG_FOR_SEED);
                 secureRandom.setSeed(seed.getBytes(DEFAULT_CHARSET));
             } else {
                 if (Objects.nonNull(secureAlg) && secureAlg.trim().length() > 0) {
@@ -149,13 +149,27 @@ public class CryptoUtil {
     }
 
     private static int defaultInitKeySize(String keyAlg) {
-        return INIT_KEY_SIZE_DEFAULT;
+        switch (keyAlg) {
+            case "AES":
+                return 128;
+            case "DES":
+                return 56;
+            default:
+                return INIT_KEY_SIZE_DEFAULT;
+        }
     }
 
     public static void main(String[] args) throws Exception {
-        System.out.println(aesEncrypt("1", aesSimpleKey("1234567812345678")));
-        System.out.println(aesEncrypt("1", genKey(KeyGeneratorEnum.AES.name())));
-        System.out.println(aesEncrypt("1", genKey(KeyGeneratorEnum.AES.name(), SecureRandomEnum.NativePRNGBlocking.name())));
-        System.out.println(aesEncrypt("1", genKeyWithSeed(KeyGeneratorEnum.AES.name(), "1234567812345678")));
+        //region aes test
+        System.out.println(base64Encoder.encodeToString(aesSimpleKey("1234567812345678").getEncoded()));
+        System.out.println(base64Encoder.encodeToString(genKey(KeyGeneratorEnum.AES.name()).getEncoded()));
+        System.out.println(base64Encoder.encodeToString(genKey(KeyGeneratorEnum.AES.name(), SecureRandomEnum.NativePRNGBlocking.name()).getEncoded()));
+        System.out.println(base64Encoder.encodeToString(genKeyWithSeed(KeyGeneratorEnum.AES.name(), "1234567812345678").getEncoded()));
+        //endregion
+
+        //region other key gen test
+        System.out.println(base64Encoder.encodeToString(genKey(KeyGeneratorEnum.DES.name()).getEncoded()));
+        System.out.println(base64Encoder.encodeToString(genKeyWithSeed(KeyGeneratorEnum.DES.name(), "123").getEncoded()));
+        //endregion
     }
 }
