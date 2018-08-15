@@ -60,11 +60,17 @@ public class CryptoUtil {
      * @param data
      * @param secretKey
      */
-    public static String aesEncrypt(String data, Key secretKey) throws Exception {
-        Cipher cipher = Cipher.getInstance(AES_CIPER_ALG);
-        cipher.init(Cipher.ENCRYPT_MODE, secretKey);
-        byte[] encryptedData = cipher.doFinal(data.getBytes());
-        return base64Encoder.encodeToString(encryptedData);
+    public static String aesEncrypt(String data, Key secretKey) {
+        try {
+            Cipher cipher = Cipher.getInstance(AES_CIPER_ALG);
+            cipher.init(Cipher.ENCRYPT_MODE, secretKey);
+            byte[] encryptedData = cipher.doFinal(data.getBytes());
+            return base64Encoder.encodeToString(encryptedData);
+        } catch (Exception e) {
+            String errorMsg = String.format("error when aesEncrypt with data(%s), keyAlg(%s)", data, secretKey.getAlgorithm());
+            logger.error(errorMsg, e);
+            throw new RuntimeException(errorMsg);
+        }
     }
 
     /**
@@ -72,12 +78,18 @@ public class CryptoUtil {
      * @param data
      * @param secretKey
      */
-    public static String aesDecrypt(String data, Key secretKey) throws Exception {
-        Cipher cipher = Cipher.getInstance(AES_CIPER_ALG);
-        cipher.init(Cipher.DECRYPT_MODE, secretKey);
-        byte[] decodedBytes = base64Decoder.decode(data);
-        byte[] original = cipher.doFinal(decodedBytes);
-        return new String(original);
+    public static String aesDecrypt(String data, Key secretKey){
+        try {
+            Cipher cipher = Cipher.getInstance(AES_CIPER_ALG);
+            cipher.init(Cipher.DECRYPT_MODE, secretKey);
+            byte[] decodedBytes = base64Decoder.decode(data);
+            byte[] original = cipher.doFinal(decodedBytes);
+            return new String(original);
+        } catch (Exception e) {
+            String errorMsg = String.format("error when aesDecrypt with data(%s), keyAlg(%s)", data, secretKey.getAlgorithm());
+            logger.error(errorMsg, e);
+            throw new RuntimeException(errorMsg);
+        }
     }
 
     /**
@@ -86,7 +98,13 @@ public class CryptoUtil {
      * @return
      */
     public static SecretKey aesSimpleKey(String secret) {
-        return new SecretKeySpec(secret.getBytes(DEFAULT_CHARSET), KeyGeneratorEnum.AES.name());
+        try {
+            return new SecretKeySpec(secret.getBytes(DEFAULT_CHARSET), KeyGeneratorEnum.AES.name());
+        } catch (Exception e) {
+            String errorMsg = String.format("error when aesSimpleKey with secret(%s)", secret);
+            logger.error(errorMsg, e);
+            throw new RuntimeException(errorMsg);
+        }
     }
 
     /**
@@ -124,8 +142,8 @@ public class CryptoUtil {
             generator.init(initKeySize, secureRandom);
             return generator.generateKey();
         } catch (Exception e) {
-            String errorMsg = String.format("error when genKey with length(%s), seed(%s)", initKeySize, seed);
-            logger.error(errorMsg);
+            String errorMsg = String.format("error when genKey with keyAlg(%s), secureAlg(%s), seed(%s)", keyAlg, secureAlg, seed);
+            logger.error(errorMsg, e);
             throw new RuntimeException(errorMsg);
         }
     }
