@@ -7,11 +7,15 @@ import javax.crypto.Cipher;
 import javax.crypto.KeyGenerator;
 import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.Field;
+import java.lang.reflect.Modifier;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.security.Key;
 import java.security.SecureRandom;
 import java.util.Base64;
+import java.util.Map;
 import java.util.Objects;
 
 /**
@@ -25,6 +29,10 @@ public class CryptoUtil {
     public static final Charset DEFAULT_CHARSET = StandardCharsets.UTF_8;
     private static final Base64.Encoder base64Encoder = Base64.getEncoder();
     private static final Base64.Decoder base64Decoder = Base64.getDecoder();
+
+    static {
+        fixKeyLength();
+    }
 
     public enum KeyGeneratorEnum {
         AES("Constructs secret keys for use with the AES algorithm."),
@@ -151,7 +159,7 @@ public class CryptoUtil {
     private static int defaultInitKeySize(String keyAlg) {
         switch (keyAlg) {
             case "AES":
-                return 128;
+                return 128;//128, 192 or 256
             case "DES":
                 return 56;
             default:
@@ -165,11 +173,58 @@ public class CryptoUtil {
         System.out.println(base64Encoder.encodeToString(genKey(KeyGeneratorEnum.AES.name()).getEncoded()));
         System.out.println(base64Encoder.encodeToString(genKey(KeyGeneratorEnum.AES.name(), SecureRandomEnum.NativePRNGBlocking.name()).getEncoded()));
         System.out.println(base64Encoder.encodeToString(genKeyWithSeed(KeyGeneratorEnum.AES.name(), "1234567812345678").getEncoded()));
+
+        SecretKey aesKey = genKey(KeyGeneratorEnum.AES.name());
+        String aesEncrypt = aesEncrypt("123", aesKey);
+        System.out.println("aesEncrypt:" + aesEncrypt);
+        String aesDecrypt = aesDecrypt(aesEncrypt, aesKey);
+        System.out.println("aesDecrypt:" + aesDecrypt);
         //endregion
 
         //region other key gen test
         System.out.println(base64Encoder.encodeToString(genKey(KeyGeneratorEnum.DES.name()).getEncoded()));
         System.out.println(base64Encoder.encodeToString(genKeyWithSeed(KeyGeneratorEnum.DES.name(), "123").getEncoded()));
         //endregion
+
+        System.out.println(Cipher.getMaxAllowedKeyLength("AES"));
     }
+
+    private static void fixKeyLength() {
+        String errorString = "Failed manually overriding key-length permissions.";
+        int newMaxKeyLength;
+        try {
+            if ((newMaxKeyLength = Cipher.getMaxAllowedKeyLength("AES")) < 256) {
+                Class<?> c = Class.forName("javax.crypto.CryptoAllPermissionCollection");
+                Constructor<?> con = c.getDeclaredConstructor();
+                con.setAccessible(true);
+                Object allPermissionCollection = con.newInstance();
+                Field f = c.getDeclaredField("all_allowed");
+                f.setAccessible(true);
+                f.setBoolean(allPermissionCollection, true);
+
+                c = Class.forName("javax.crypto.CryptoPermissions");
+                con = c.getDeclaredConstructor();
+                con.setAccessible(true);
+                Object allPermissions = con.newInstance();
+                f = c.getDeclaredField("perms");
+                f.setAccessible(true);
+                ((Map<String, Object>) f.get(allPermissions)).put("*", allPermissionCollection);
+
+                c = Class.forName("javax.crypto.JceSecurityManager");
+                f = c.getDeclaredField("defaultPolicy");
+                f.setAccessible(true);
+                Field mf = Field.class.getDeclaredField("modifiers");
+                mf.setAccessible(true);
+                mf.setInt(f, f.getModifiers() & ~Modifier.FINAL);
+                f.set(null, allPermissions);
+
+                newMaxKeyLength = Cipher.getMaxAllowedKeyLength("AES");
+            }
+        } catch (Exception e) {
+            throw new RuntimeException(errorString, e);
+        }
+        if (newMaxKeyLength < 256)
+            throw new RuntimeException(errorString); // hack failed
+    }
+
 }
