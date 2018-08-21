@@ -24,9 +24,9 @@ import java.util.Objects;
  */
 public class CryptoUtil {
     private static final Logger logger = LoggerFactory.getLogger(CryptoUtil.class);
-    public static final String LOCAL_PRIVATE_KEY = "MIICdgIBADANBgkqhkiG9w0BAQEFAASCAmAwggJcAgEAAoGBALhvii/RhxmejXIhziIa7k9CpDVVKuqFyMBCQ8Ln73/Sf8JiDqRcKl1Dp7WOZ84YT0jPgazY9R3CJBKb9k+CYk1AtFkn0O3sqn4+zVKZHiW9JYdx00anUmQjI5RyicPICb9ldKsTHXLQbHhkoCqPvLArGhjTPH0lbRa8U2Wo6JyXAgMBAAECgYAf+xdXG1n100xrkfkQaOMR01ht9wquB+y7icH+NgGNhI6qwh4P2ftumKCoFr1hO03kLjcqJaS7OELRB0I6nz00JDd90FXU4m1xcI3qzDRXz6kjmcgt3bcGfg0EwgUE7wlYAteo2v+0TIEAt19rI+jn8dsmoDW4wIrIFo8gV9JUYQJBAPRf42F2xta0T83klMfeHcHUDRNTGzcrQl8SUs+7w6SKkO7A/T7N0/qD66iDJrWk0rPvhmmOTEJJEzBj2H/K0vMCQQDBNa/mKy2obTfylzUS9YK10p76TeWPlLMtgY8mxkZVGHqC9tEurYesP6hjzamT5a13GLgu1NN7tLcDhzrTF5DNAkBwIPtdQjnUVGH10DdwSfuPb3QcdNqdAs1ugCLdTINloWsFEiphQeJNJXDhHmSJnjpL89DR6EgXdh5G6tlxMah/AkA1DRPGZHa993dUQhaNpSIF4NZMLlVpLlBgn2F6KRkoxnblPPZFFdrZ/gSzmsYEWR1fRUdVfJSxM/bInjoVujPFAkEAkkahphDgDcJjXBSDoBEobuPc4UubkBidwI5l0f0pNf2guek5Ws+/1No110/Ybv/uGCADvFepMNACWAR5mihQuA==";
-    public static final String LOCAL_PUBLIC_KEY = "MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQC4b4ov0YcZno1yIc4iGu5PQqQ1VSrqhcjAQkPC5+9/0n/CYg6kXCpdQ6e1jmfOGE9Iz4Gs2PUdwiQSm/ZPgmJNQLRZJ9Dt7Kp+Ps1SmR4lvSWHcdNGp1JkIyOUconDyAm/ZXSrEx1y0Gx4ZKAqj7ywKxoY0zx9JW0WvFNlqOiclwIDAQAB";
-    public static final Charset DEFAULT_CHARSET = StandardCharsets.UTF_8;
+    private static final String LOCAL_PRIVATE_KEY = "MIICdgIBADANBgkqhkiG9w0BAQEFAASCAmAwggJcAgEAAoGBALhvii/RhxmejXIhziIa7k9CpDVVKuqFyMBCQ8Ln73/Sf8JiDqRcKl1Dp7WOZ84YT0jPgazY9R3CJBKb9k+CYk1AtFkn0O3sqn4+zVKZHiW9JYdx00anUmQjI5RyicPICb9ldKsTHXLQbHhkoCqPvLArGhjTPH0lbRa8U2Wo6JyXAgMBAAECgYAf+xdXG1n100xrkfkQaOMR01ht9wquB+y7icH+NgGNhI6qwh4P2ftumKCoFr1hO03kLjcqJaS7OELRB0I6nz00JDd90FXU4m1xcI3qzDRXz6kjmcgt3bcGfg0EwgUE7wlYAteo2v+0TIEAt19rI+jn8dsmoDW4wIrIFo8gV9JUYQJBAPRf42F2xta0T83klMfeHcHUDRNTGzcrQl8SUs+7w6SKkO7A/T7N0/qD66iDJrWk0rPvhmmOTEJJEzBj2H/K0vMCQQDBNa/mKy2obTfylzUS9YK10p76TeWPlLMtgY8mxkZVGHqC9tEurYesP6hjzamT5a13GLgu1NN7tLcDhzrTF5DNAkBwIPtdQjnUVGH10DdwSfuPb3QcdNqdAs1ugCLdTINloWsFEiphQeJNJXDhHmSJnjpL89DR6EgXdh5G6tlxMah/AkA1DRPGZHa993dUQhaNpSIF4NZMLlVpLlBgn2F6KRkoxnblPPZFFdrZ/gSzmsYEWR1fRUdVfJSxM/bInjoVujPFAkEAkkahphDgDcJjXBSDoBEobuPc4UubkBidwI5l0f0pNf2guek5Ws+/1No110/Ybv/uGCADvFepMNACWAR5mihQuA==";
+    private static final String LOCAL_PUBLIC_KEY = "MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQC4b4ov0YcZno1yIc4iGu5PQqQ1VSrqhcjAQkPC5+9/0n/CYg6kXCpdQ6e1jmfOGE9Iz4Gs2PUdwiQSm/ZPgmJNQLRZJ9Dt7Kp+Ps1SmR4lvSWHcdNGp1JkIyOUconDyAm/ZXSrEx1y0Gx4ZKAqj7ywKxoY0zx9JW0WvFNlqOiclwIDAQAB";
+    private static final Charset DEFAULT_CHARSET = StandardCharsets.UTF_8;
     private static final Base64.Encoder base64Encoder = Base64.getEncoder();
     private static final Base64.Decoder base64Decoder = Base64.getDecoder();
 
@@ -57,8 +57,18 @@ public class CryptoUtil {
         }
     }
 
+    public enum CiperEnum {
+        AES("Advanced Encryption Standard as specified by NIST in FIPS 197. Also known as the Rijndael algorithm by Joan Daemen and Vincent Rijmen, AES is a 128-bit block cipher supporting keys of 128, 192, and 256 bits."),
+        RSA("The RSA encryption algorithm as defined in PKCS #1（http://www.rfc-editor.org/rfc/rfc2437.txt）");
+        public String desc;
+
+        CiperEnum(String desc) {
+            this.desc = desc;
+        }
+    }
+
     //region algs
-    public static final String AES_CIPER_ALG = "AES";
+    public static final String AES_CIPER_ALG = CiperEnum.AES.name();
     public static final String SECURE_RANDOM_ALG_FOR_SEED = SecureRandomEnum.SHA1PRNG.name();
     public static final int INIT_KEY_SIZE_DEFAULT = 128;
     //endregion
