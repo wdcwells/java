@@ -141,6 +141,23 @@ public class CryptoUtil {
     }
 
     /**
+     * 私钥加密
+     * @param data must not be longer than 117 bytes
+     * @param priKey
+     * @return
+     */
+    public static String rsaEncryptByPri(String data, String priKey) {
+        try {
+            Cipher cipher = Cipher.getInstance(CiperEnum.RSA.name());
+            cipher.init(Cipher.ENCRYPT_MODE, rsaPrivateKey(priKey));
+            return base64Encoder.encodeToString(cipher.doFinal(data.getBytes(DEFAULT_CHARSET)));
+        } catch (Exception e) {
+            logger.error("error in rsaEncryptByPri with data({}), priKey({})", data, priKey, e);
+        }
+        return null;
+    }
+
+    /**
      * 私钥解密
      * @param data
      * @param priKey
@@ -153,6 +170,23 @@ public class CryptoUtil {
             return new String(cipher.doFinal(base64Decoder.decode(data)), DEFAULT_CHARSET);
         } catch (Exception e) {
             logger.error("error in rsaDecryptByPri with data({}), priKey({})", data, priKey, e);
+        }
+        return null;
+    }
+
+    /**
+     * 公钥解密
+     * @param data
+     * @param pubKey
+     * @return
+     */
+    public static String rsaDecryptByPub(String data, String pubKey) {
+        try {
+            Cipher cipher = Cipher.getInstance(CiperEnum.RSA.name());
+            cipher.init(Cipher.DECRYPT_MODE, rsaPublicKey(pubKey));
+            return new String(cipher.doFinal(base64Decoder.decode(data)), DEFAULT_CHARSET);
+        } catch (Exception e) {
+            logger.error("error in rsaDecryptByPub with data({}), pubKey({})", data, pubKey, e);
         }
         return null;
     }
@@ -273,7 +307,8 @@ public class CryptoUtil {
         }
         //region rsa
         System.out.println(rsaDecryptByPri(rsaEncryptByPub("123", LOCAL_PUBLIC_KEY), LOCAL_PRIVATE_KEY));
-        System.out.println(rsaDecryptByPri(rsaEncryptByPub(content.toString(), LOCAL_PUBLIC_KEY), LOCAL_PRIVATE_KEY));
+//        System.out.println(rsaDecryptByPri(rsaEncryptByPub(content.toString(), LOCAL_PUBLIC_KEY), LOCAL_PRIVATE_KEY));
+        System.out.println(rsaDecryptByPub(rsaEncryptByPri(content.toString(), LOCAL_PRIVATE_KEY), LOCAL_PUBLIC_KEY));
         //endregion
 
     }
