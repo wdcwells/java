@@ -65,8 +65,9 @@ public class HelloController {
     }
 
 
-    private class Simple {
+    private static class Simple {
         private Integer id;
+        private String name;
         private int age;
 
         public Integer getId() {
@@ -75,6 +76,14 @@ public class HelloController {
 
         public void setId(Integer id) {
             this.id = id;
+        }
+
+        public String getName() {
+            return name;
+        }
+
+        public void setName(String name) {
+            this.name = name;
         }
 
         public int getAge() {
