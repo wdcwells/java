@@ -13,7 +13,12 @@ import java.lang.reflect.Modifier;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.security.Key;
+import java.security.KeyFactory;
 import java.security.SecureRandom;
+import java.security.interfaces.RSAPrivateKey;
+import java.security.interfaces.RSAPublicKey;
+import java.security.spec.PKCS8EncodedKeySpec;
+import java.security.spec.X509EncodedKeySpec;
 import java.util.Base64;
 import java.util.Map;
 import java.util.Objects;
@@ -31,7 +36,7 @@ public class CryptoUtil {
     private static final Base64.Decoder base64Decoder = Base64.getDecoder();
 
     static {
-        fixKeyLength();
+//        fixKeyLength();
     }
 
     public enum KeyGeneratorEnum {
@@ -42,6 +47,16 @@ public class CryptoUtil {
         public String desc;
 
         KeyGeneratorEnum(String desc) {
+            this.desc = desc;
+        }
+    }
+
+    public enum KeyFactoryEnum {
+        RSA("Constructs pub/pri keys for use with the RSA algorithm."),
+        ;
+        public String desc;
+
+        KeyFactoryEnum(String desc) {
             this.desc = desc;
         }
     }
@@ -67,9 +82,7 @@ public class CryptoUtil {
         }
     }
 
-    //region algs
-    public static final String AES_CIPER_ALG = CiperEnum.AES.name();
-    public static final String SECURE_RANDOM_ALG_FOR_SEED = SecureRandomEnum.SHA1PRNG.name();
+    //region defaults
     public static final int INIT_KEY_SIZE_DEFAULT = 128;
     //endregion
 
@@ -80,9 +93,9 @@ public class CryptoUtil {
      */
     public static String aesEncrypt(String data, Key secretKey) {
         try {
-            Cipher cipher = Cipher.getInstance(AES_CIPER_ALG);
+            Cipher cipher = Cipher.getInstance(CiperEnum.AES.name());
             cipher.init(Cipher.ENCRYPT_MODE, secretKey);
-            byte[] encryptedData = cipher.doFinal(data.getBytes());
+            byte[] encryptedData = cipher.doFinal(data.getBytes(DEFAULT_CHARSET));
             return base64Encoder.encodeToString(encryptedData);
         } catch (Exception e) {
             String errorMsg = String.format("error when aesEncrypt with data(%s), keyAlg(%s)", data, secretKey.getAlgorithm());
@@ -98,17 +111,72 @@ public class CryptoUtil {
      */
     public static String aesDecrypt(String data, Key secretKey){
         try {
-            Cipher cipher = Cipher.getInstance(AES_CIPER_ALG);
+            Cipher cipher = Cipher.getInstance(CiperEnum.AES.name());
             cipher.init(Cipher.DECRYPT_MODE, secretKey);
             byte[] decodedBytes = base64Decoder.decode(data);
             byte[] original = cipher.doFinal(decodedBytes);
-            return new String(original);
+            return new String(original, DEFAULT_CHARSET);
         } catch (Exception e) {
             String errorMsg = String.format("error when aesDecrypt with data(%s), keyAlg(%s)", data, secretKey.getAlgorithm());
             logger.error(errorMsg, e);
             throw new RuntimeException(errorMsg);
         }
     }
+
+    /**
+     * 公钥加密
+     * @param data must not be longer than 117 bytes
+     * @param pubKey
+     * @return
+     */
+    public static String rsaEncryptByPub(String data, String pubKey) {
+        try {
+            Cipher cipher = Cipher.getInstance(CiperEnum.RSA.name());
+            cipher.init(Cipher.ENCRYPT_MODE, rsaPublicKey(pubKey));
+            return base64Encoder.encodeToString(cipher.doFinal(data.getBytes(DEFAULT_CHARSET)));
+        } catch (Exception e) {
+            logger.error("error in rsaEncryptByPub with data({}), pubKey({})", data, pubKey, e);
+        }
+        return null;
+    }
+
+    /**
+     * 私钥解密
+     * @param data
+     * @param priKey
+     * @return
+     */
+    public static String rsaDecryptByPri(String data, String priKey) {
+        try {
+            Cipher cipher = Cipher.getInstance(CiperEnum.RSA.name());
+            cipher.init(Cipher.DECRYPT_MODE, rsaPrivateKey(priKey));
+            return new String(cipher.doFinal(base64Decoder.decode(data)), DEFAULT_CHARSET);
+        } catch (Exception e) {
+            logger.error("error in rsaDecryptByPri with data({}), priKey({})", data, priKey, e);
+        }
+        return null;
+    }
+
+    private static RSAPublicKey rsaPublicKey(String pubKey) {
+        try {
+            return (RSAPublicKey) KeyFactory.getInstance(KeyFactoryEnum.RSA.name())
+                    .generatePublic(new X509EncodedKeySpec(base64Decoder.decode(pubKey)));
+        } catch (Exception e) {
+            logger.error("error in rsaPublicKey with pubKey({})", pubKey, e);
+        }
+        return null;
+    }
+
+    private static RSAPrivateKey rsaPrivateKey(String priKey) {
+        try {
+            return (RSAPrivateKey) KeyFactory.getInstance(KeyFactoryEnum.RSA.name())
+                    .generatePrivate(new PKCS8EncodedKeySpec(base64Decoder.decode(priKey)));
+        } catch (Exception e) {
+            logger.error("error in rsaPrivateKey with priKey({})", priKey, e);
+        }
+        return null;
+    }
+
 
     /**
      * 获取 SecretKey(AES)
@@ -148,7 +216,7 @@ public class CryptoUtil {
             KeyGenerator generator = KeyGenerator.getInstance(keyAlg);
             SecureRandom secureRandom;
             if (Objects.nonNull(seed) && seed.trim().length() > 0) {
-                secureRandom = SecureRandom.getInstance(SECURE_RANDOM_ALG_FOR_SEED);
+                secureRandom = SecureRandom.getInstance(SecureRandomEnum.SHA1PRNG.name());
                 secureRandom.setSeed(seed.getBytes(DEFAULT_CHARSET));
             } else {
                 if (Objects.nonNull(secureAlg) && secureAlg.trim().length() > 0) {
@@ -197,6 +265,17 @@ public class CryptoUtil {
         //endregion
 
         System.out.println(Cipher.getMaxAllowedKeyLength("AES"));
+        System.out.println(Cipher.getMaxAllowedKeyLength("RSA"));
+
+        StringBuilder content = new StringBuilder();
+        for (int i = 0; i < 117; i++) {//no longer than 117
+            content.append("1");
+        }
+        //region rsa
+        System.out.println(rsaDecryptByPri(rsaEncryptByPub("123", LOCAL_PUBLIC_KEY), LOCAL_PRIVATE_KEY));
+        System.out.println(rsaDecryptByPri(rsaEncryptByPub(content.toString(), LOCAL_PUBLIC_KEY), LOCAL_PRIVATE_KEY));
+        //endregion
+
     }
 
     private static void fixKeyLength() {
