@@ -7,6 +7,7 @@ import javax.crypto.Cipher;
 import javax.crypto.KeyGenerator;
 import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
+import java.io.ByteArrayOutputStream;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
@@ -34,6 +35,9 @@ public class CryptoUtil {
     private static final Charset DEFAULT_CHARSET = StandardCharsets.UTF_8;
     private static final Base64.Encoder base64Encoder = Base64.getEncoder();
     private static final Base64.Decoder base64Decoder = Base64.getDecoder();
+
+    private static final int RSA_MAX_ENCRYPT_BLOCK_SIZE = 117;
+    private static final int RSA_MAX_DECRYPT_BLOCK_SIZE = 128;
 
     static {
 //        fixKeyLength();
@@ -148,9 +152,28 @@ public class CryptoUtil {
      */
     public static String rsaEncryptByPri(String data, String priKey) {
         try {
+            byte[] bytes = data.getBytes(DEFAULT_CHARSET);
+            byte[] encrypted;
             Cipher cipher = Cipher.getInstance(CiperEnum.RSA.name());
             cipher.init(Cipher.ENCRYPT_MODE, rsaPrivateKey(priKey));
-            return base64Encoder.encodeToString(cipher.doFinal(data.getBytes(DEFAULT_CHARSET)));
+            int offSet = 0;
+            int total = bytes.length;
+            if (total > RSA_MAX_ENCRYPT_BLOCK_SIZE) {
+                try (ByteArrayOutputStream outBytes = new ByteArrayOutputStream()){
+                    while (offSet < total) {
+                        int len;
+                        if ((len = total - offSet) > RSA_MAX_ENCRYPT_BLOCK_SIZE)
+                            len = RSA_MAX_ENCRYPT_BLOCK_SIZE;
+                        byte[] tmp = cipher.doFinal(bytes, offSet, len);
+                        outBytes.write(tmp);
+                        offSet += len;
+                    }
+                    encrypted = outBytes.toByteArray();
+                }
+            } else {
+                encrypted = cipher.doFinal(bytes);
+            }
+            return base64Encoder.encodeToString(encrypted);
         } catch (Exception e) {
             logger.error("error in rsaEncryptByPri with data({}), priKey({})", data, priKey, e);
         }
@@ -302,7 +325,7 @@ public class CryptoUtil {
         System.out.println(Cipher.getMaxAllowedKeyLength("RSA"));
 
         StringBuilder content = new StringBuilder();
-        for (int i = 0; i < 117; i++) {//no longer than 117
+        for (int i = 0; i < 118; i++) {//no longer than 117
             content.append("1");
         }
         //region rsa
