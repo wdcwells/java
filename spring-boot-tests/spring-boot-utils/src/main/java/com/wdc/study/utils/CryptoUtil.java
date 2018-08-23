@@ -60,6 +60,10 @@ public class CryptoUtil {
         //region other key gen test
         System.out.println(base64Encoder.encodeToString(genKey(KeyGeneratorEnum.DES.name()).getEncoded()));
         System.out.println(base64Encoder.encodeToString(genKeyWithSeed(KeyGeneratorEnum.DES.name(), "123").getEncoded()));
+
+        KeyPair keyPair = rsaGenKeyPair(KeyPairEnum.RSA, 1024);
+        System.out.println("rsa pri:" + base64Encoder.encodeToString(keyPair.getPrivate().getEncoded()));
+        System.out.println("rsa pub:" + base64Encoder.encodeToString(keyPair.getPublic().getEncoded()));
         //endregion
 
         System.out.println(Cipher.getMaxAllowedKeyLength("AES"));
@@ -336,6 +340,17 @@ public class CryptoUtil {
         return null;
     }
 
+    private static KeyPair rsaGenKeyPair(KeyPairEnum alg, int keySize) {
+        try {
+            KeyPairGenerator generator = KeyPairGenerator.getInstance(alg.name());
+            generator.initialize(keySize);
+            return generator.generateKeyPair();
+        } catch (Exception e) {
+            logger.error("error in rsaGenKeyPair with alg({}), keySize({})", alg.name(), keySize, e);
+        }
+        return null;
+    }
+
     private static SecretKey genKey(String keyAlg, String secureAlg, String seed) {
         int initKeySize = defaultInitKeySize(keyAlg);
         try {
@@ -485,4 +500,15 @@ public class CryptoUtil {
         }
     }
 
+    public enum KeyPairEnum {
+        DSA("Generates keypairs for the Digital Signature Algorithm."),
+        RSA("Generates keypairs for the RSA algorithm (Signature/Cipher)."),
+        EC("Generates keypairs for the Elliptic Curve algorithm."),
+        ;
+        public String desc;
+
+        KeyPairEnum(String desc) {
+            this.desc = desc;
+        }
+    }
 }

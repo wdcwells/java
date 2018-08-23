@@ -5,7 +5,7 @@ package com.wdc.study.test;
  * @date 2018/7/17
  */
 public class ConversionTest {
-    public static void main(String[] args) {
+    public static void main(String[] args) throws Exception{
 //        widdening();
 //        sfp();
 //        nonSfp();
@@ -13,7 +13,8 @@ public class ConversionTest {
 //        floatStoreDetail();
 //        floatMaxCalculate();
 //        intToByte();
-        numberRange();
+//        numberRange();
+        str2Bytes();
     }
 
     private static void numberRange() {//数量级差很大呀
@@ -117,5 +118,10 @@ public class ConversionTest {
         double d = i;
         System.out.println(i - (int) f);
         System.out.println(i - (int) d);
+    }
+
+    private static void str2Bytes() throws Exception {
+        System.out.println("12".getBytes().length);
+        System.out.println("中国".getBytes().length);
     }
 }
