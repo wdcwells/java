@@ -13,10 +13,7 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
-import java.security.Key;
-import java.security.KeyFactory;
-import java.security.SecureRandom;
-import java.security.Signature;
+import java.security.*;
 import java.security.interfaces.RSAPrivateKey;
 import java.security.interfaces.RSAPublicKey;
 import java.security.spec.PKCS8EncodedKeySpec;
@@ -24,6 +21,7 @@ import java.security.spec.X509EncodedKeySpec;
 import java.util.Base64;
 import java.util.Map;
 import java.util.Objects;
+
 
 /**
  * @author wdc
@@ -99,9 +97,30 @@ public class CryptoUtil {
         }
     }
 
+    public enum MessageDigestEnum {
+        MD5("The MD5 message digest algorithm as defined in RFC 1321(http://www.ietf.org/rfc/rfc1321.txt)."),
+        ;
+        public String desc;
+
+        MessageDigestEnum(String desc) {
+            this.desc = desc;
+        }
+    }
+
     //region defaults
     public static final int INIT_KEY_SIZE_DEFAULT = 128;
     //endregion
+
+    public static String messageDigest(String data, MessageDigestEnum alg) {
+        try {
+            MessageDigest digest = MessageDigest.getInstance(alg.name());
+            digest.update(data.getBytes(DEFAULT_CHARSET));
+            return toHexString(digest.digest());
+        } catch (Exception e) {
+            logger.error("error in messageDigest whith data({}), alg({})", data, alg.name(), e);
+        }
+        return null;
+    }
 
     /**
      * AES 加密
@@ -212,6 +231,13 @@ public class CryptoUtil {
         return null;
     }
 
+    /**
+     * 私钥签名
+     * @param data
+     * @param priKey
+     * @param alg
+     * @return
+     */
     public static String rsaSign(String data, String priKey, SignatureEnum alg) {
         try {
             Signature signature = Signature.getInstance(alg.name());
@@ -224,6 +250,14 @@ public class CryptoUtil {
         return null;
     }
 
+    /**
+     * 公钥验签
+     * @param data
+     * @param sign
+     * @param pubKey
+     * @param alg
+     * @return
+     */
     public static boolean rsaVerifySign(String data, String sign, String pubKey, SignatureEnum alg) {
         try {
             Signature signature = Signature.getInstance(alg.name());
@@ -344,6 +378,27 @@ public class CryptoUtil {
         }
     }
 
+    /**
+     * Convert byte[] to hex string
+     * @param src byte[] data
+     * @return hex string
+     */
+    private static String toHexString(byte[] src){
+        StringBuilder stringBuilder = new StringBuilder();
+        if (src == null || src.length <= 0) {
+            return null;
+        }
+        for (int i = 0; i < src.length; i++) {
+            int v = src[i] & 0xFF;
+            String hv = Integer.toHexString(v);
+            if (hv.length() < 2) {
+                stringBuilder.append(0);
+            }
+            stringBuilder.append(hv);
+        }
+        return stringBuilder.toString();
+    }
+
     public static void main(String[] args) throws Exception {
         //region aes test
         System.out.println(base64Encoder.encodeToString(aesSimpleKey("1234567812345678").getEncoded()));
@@ -381,6 +436,10 @@ public class CryptoUtil {
                 , LOCAL_PUBLIC_KEY, SignatureEnum.MD5withRSA));
         System.out.println(rsaVerifySign(content.toString(), rsaSign(content.toString(), LOCAL_PRIVATE_KEY, SignatureEnum.MD5withRSA)
                 , LOCAL_PUBLIC_KEY, SignatureEnum.MD5withRSA));
+        //endregion
+
+        //region digest
+        System.out.println(messageDigest("1234", MessageDigestEnum.MD5));
         //endregion
 
     }
