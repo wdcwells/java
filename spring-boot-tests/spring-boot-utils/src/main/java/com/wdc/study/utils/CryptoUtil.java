@@ -16,6 +16,7 @@ import java.nio.charset.StandardCharsets;
 import java.security.Key;
 import java.security.KeyFactory;
 import java.security.SecureRandom;
+import java.security.Signature;
 import java.security.interfaces.RSAPrivateKey;
 import java.security.interfaces.RSAPublicKey;
 import java.security.spec.PKCS8EncodedKeySpec;
@@ -82,6 +83,18 @@ public class CryptoUtil {
         public String desc;
 
         CiperEnum(String desc) {
+            this.desc = desc;
+        }
+    }
+
+    public enum SignatureEnum {
+        NONEwithRSA("The RSA signature algorithm, which does not use a digesting algorithm (for example, MD5/SHA1) before performing the RSA operation. For more information about the RSA Signature algorithms, see (http://www.rfc-editor.org/rfc/rfc2437.txt)."),
+        MD5withRSA("The MD2/MD5 with RSA Encryption signature algorithm, which uses the MD2/MD5 digest algorithm and RSA to create and verify RSA digital signatures as defined in (http://www.rfc-editor.org/rfc/rfc2437.txt)."),
+        SHA1withRSA("The signature algorithm with SHA-* and the RSA encryption algorithm as defined in the OSI Interoperability Workshop, using the padding conventions described in (http://www.rfc-editor.org/rfc/rfc2437.txt)."),
+        ;
+        public String desc;
+
+        SignatureEnum(String desc) {
             this.desc = desc;
         }
     }
@@ -197,6 +210,30 @@ public class CryptoUtil {
             logger.error("error in rsaDecryptByPub with data({}), pubKey({})", data, pubKey, e);
         }
         return null;
+    }
+
+    public static String rsaSign(String data, String priKey, SignatureEnum alg) {
+        try {
+            Signature signature = Signature.getInstance(alg.name());
+            signature.initSign(rsaPrivateKey(priKey));
+            signature.update(data.getBytes(DEFAULT_CHARSET));
+            return base64Encoder.encodeToString(signature.sign());
+        } catch (Exception e) {
+            logger.error("error in rsaSign with data({}), priKey({}), alg({})", data, priKey, alg.name(), e);
+        }
+        return null;
+    }
+
+    public static boolean rsaVerifySign(String data, String sign, String pubKey, SignatureEnum alg) {
+        try {
+            Signature signature = Signature.getInstance(alg.name());
+            signature.initVerify(rsaPublicKey(pubKey));
+            signature.update(data.getBytes(DEFAULT_CHARSET));
+            return signature.verify(base64Decoder.decode(sign));
+        } catch (Exception e) {
+            logger.error("error in rsaVerifySign with data({}), sign({}), pubKey({}), alg({})", data, sign, pubKey, alg.name(), e);
+        }
+        return false;
     }
 
     private static byte[] doFinal(Cipher cipher, byte[] data, int max) throws Exception {
@@ -330,13 +367,20 @@ public class CryptoUtil {
         System.out.println(Cipher.getMaxAllowedKeyLength("RSA"));
 
         StringBuilder content = new StringBuilder();
-        for (int i = 0; i < 128; i++) {//no longer than 117
+        for (int i = 0; i < 128; i++) {
             content.append("1");
         }
         //region rsa
         System.out.println(rsaDecryptByPri(rsaEncryptByPub("123", LOCAL_PUBLIC_KEY), LOCAL_PRIVATE_KEY));
         System.out.println(rsaDecryptByPri(rsaEncryptByPub(content.toString(), LOCAL_PUBLIC_KEY), LOCAL_PRIVATE_KEY));
         System.out.println(rsaDecryptByPub(rsaEncryptByPri(content.toString(), LOCAL_PRIVATE_KEY), LOCAL_PUBLIC_KEY));
+        //endregion
+
+        //region rsa sign
+        System.out.println(rsaVerifySign("123", rsaSign("123", LOCAL_PRIVATE_KEY, SignatureEnum.MD5withRSA)
+                , LOCAL_PUBLIC_KEY, SignatureEnum.MD5withRSA));
+        System.out.println(rsaVerifySign(content.toString(), rsaSign(content.toString(), LOCAL_PRIVATE_KEY, SignatureEnum.MD5withRSA)
+                , LOCAL_PUBLIC_KEY, SignatureEnum.MD5withRSA));
         //endregion
 
     }
