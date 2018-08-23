@@ -129,15 +129,16 @@ public class CryptoUtil {
 
     /**
      * 公钥加密
-     * @param data must not be longer than 117 bytes
+     * @param data will be split into blocks of size 117 if its byte size is more than 117
      * @param pubKey
      * @return
      */
     public static String rsaEncryptByPub(String data, String pubKey) {
         try {
+            byte[] content = data.getBytes(DEFAULT_CHARSET);
             Cipher cipher = Cipher.getInstance(CiperEnum.RSA.name());
             cipher.init(Cipher.ENCRYPT_MODE, rsaPublicKey(pubKey));
-            return base64Encoder.encodeToString(cipher.doFinal(data.getBytes(DEFAULT_CHARSET)));
+            return base64Encoder.encodeToString(doFinal(cipher, content, RSA_MAX_ENCRYPT_BLOCK_SIZE));
         } catch (Exception e) {
             logger.error("error in rsaEncryptByPub with data({}), pubKey({})", data, pubKey, e);
         }
@@ -146,34 +147,16 @@ public class CryptoUtil {
 
     /**
      * 私钥加密
-     * @param data must not be longer than 117 bytes
+     * @param data will be split into blocks of size 117 if its byte size is more than 117
      * @param priKey
      * @return
      */
     public static String rsaEncryptByPri(String data, String priKey) {
         try {
-            byte[] bytes = data.getBytes(DEFAULT_CHARSET);
-            byte[] encrypted;
+            byte[] content = data.getBytes(DEFAULT_CHARSET);
             Cipher cipher = Cipher.getInstance(CiperEnum.RSA.name());
             cipher.init(Cipher.ENCRYPT_MODE, rsaPrivateKey(priKey));
-            int offSet = 0;
-            int total = bytes.length;
-            if (total > RSA_MAX_ENCRYPT_BLOCK_SIZE) {
-                try (ByteArrayOutputStream outBytes = new ByteArrayOutputStream()){
-                    while (offSet < total) {
-                        int len;
-                        if ((len = total - offSet) > RSA_MAX_ENCRYPT_BLOCK_SIZE)
-                            len = RSA_MAX_ENCRYPT_BLOCK_SIZE;
-                        byte[] tmp = cipher.doFinal(bytes, offSet, len);
-                        outBytes.write(tmp);
-                        offSet += len;
-                    }
-                    encrypted = outBytes.toByteArray();
-                }
-            } else {
-                encrypted = cipher.doFinal(bytes);
-            }
-            return base64Encoder.encodeToString(encrypted);
+            return base64Encoder.encodeToString(doFinal(cipher, content, RSA_MAX_ENCRYPT_BLOCK_SIZE));
         } catch (Exception e) {
             logger.error("error in rsaEncryptByPri with data({}), priKey({})", data, priKey, e);
         }
@@ -182,15 +165,16 @@ public class CryptoUtil {
 
     /**
      * 私钥解密
-     * @param data
+     * @param data will be split into blocks of size 128 if its byte size is more than 128
      * @param priKey
      * @return
      */
     public static String rsaDecryptByPri(String data, String priKey) {
         try {
+            byte[] content = base64Decoder.decode(data);
             Cipher cipher = Cipher.getInstance(CiperEnum.RSA.name());
             cipher.init(Cipher.DECRYPT_MODE, rsaPrivateKey(priKey));
-            return new String(cipher.doFinal(base64Decoder.decode(data)), DEFAULT_CHARSET);
+            return new String(doFinal(cipher, content, RSA_MAX_DECRYPT_BLOCK_SIZE), DEFAULT_CHARSET);
         } catch (Exception e) {
             logger.error("error in rsaDecryptByPri with data({}), priKey({})", data, priKey, e);
         }
@@ -199,19 +183,40 @@ public class CryptoUtil {
 
     /**
      * 公钥解密
-     * @param data
+     * @param data will be split into blocks of size 128 if its byte size is more than 128
      * @param pubKey
      * @return
      */
     public static String rsaDecryptByPub(String data, String pubKey) {
         try {
+            byte[] content = base64Decoder.decode(data);
             Cipher cipher = Cipher.getInstance(CiperEnum.RSA.name());
             cipher.init(Cipher.DECRYPT_MODE, rsaPublicKey(pubKey));
-            return new String(cipher.doFinal(base64Decoder.decode(data)), DEFAULT_CHARSET);
+            return new String(doFinal(cipher, content, RSA_MAX_DECRYPT_BLOCK_SIZE), DEFAULT_CHARSET);
         } catch (Exception e) {
             logger.error("error in rsaDecryptByPub with data({}), pubKey({})", data, pubKey, e);
         }
         return null;
+    }
+
+    private static byte[] doFinal(Cipher cipher, byte[] data, int max) throws Exception {
+        int total = data.length, offset = 0, len;
+        byte[] result;
+        if (total > max) {
+            try(ByteArrayOutputStream bytesOut = new ByteArrayOutputStream()) {
+                while (offset < total) {
+                    if ((len = total - offset) > max)
+                        len = max;
+                    byte[] tmp = cipher.doFinal(data, offset, len);
+                    bytesOut.write(tmp);
+                    offset += len;
+                }
+                result = bytesOut.toByteArray();
+            }
+        } else {
+            result = cipher.doFinal(data);
+        }
+        return result;
     }
 
     private static RSAPublicKey rsaPublicKey(String pubKey) {
@@ -325,12 +330,12 @@ public class CryptoUtil {
         System.out.println(Cipher.getMaxAllowedKeyLength("RSA"));
 
         StringBuilder content = new StringBuilder();
-        for (int i = 0; i < 118; i++) {//no longer than 117
+        for (int i = 0; i < 128; i++) {//no longer than 117
             content.append("1");
         }
         //region rsa
         System.out.println(rsaDecryptByPri(rsaEncryptByPub("123", LOCAL_PUBLIC_KEY), LOCAL_PRIVATE_KEY));
-//        System.out.println(rsaDecryptByPri(rsaEncryptByPub(content.toString(), LOCAL_PUBLIC_KEY), LOCAL_PRIVATE_KEY));
+        System.out.println(rsaDecryptByPri(rsaEncryptByPub(content.toString(), LOCAL_PUBLIC_KEY), LOCAL_PRIVATE_KEY));
         System.out.println(rsaDecryptByPub(rsaEncryptByPri(content.toString(), LOCAL_PRIVATE_KEY), LOCAL_PUBLIC_KEY));
         //endregion
 
