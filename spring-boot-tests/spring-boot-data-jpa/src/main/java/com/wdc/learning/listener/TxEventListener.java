@@ -17,7 +17,8 @@ public class TxEventListener {
     public void afterCommit(ApplicationEvent event) {
         Object source = event.getSource();
         if (source instanceof Customer)
-            System.out.printf("customer with firstName(%s) is saved.%n", ((Customer) source).getFirstName());
+            System.out.printf("customer with firstName(%s), id(%s), is saved.%n"
+                    , ((Customer) source).getFirstName(), ((Customer) source).getId());
     }
 
     @TransactionalEventListener(phase = TransactionPhase.AFTER_ROLLBACK)

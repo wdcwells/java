@@ -29,7 +29,8 @@ public class TxService {
     @Transactional
     public Customer save(Customer customer) {
         eventPublisher.publishEvent(new ApplicationEvent(customer){});
-        if (true) throw new RuntimeException("123");
+        customerRepository.save(customer);
+        if (true) throw new RuntimeException("123");//test rollback
         return customer;
     }
 }
