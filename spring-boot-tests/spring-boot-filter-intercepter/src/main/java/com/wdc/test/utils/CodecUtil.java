@@ -30,8 +30,8 @@ public class CodecUtil {
         RSAPrivateKey privateKey = rsaLoadPriFromFile("/Users/wdc/Develop/Tools/Rsa/pkcs8_rsa_private_key.pem");
         byte[] wdc = rsaEncrypt(publicKey, "wdc".getBytes());
         byte[] wqh = rsaEncrypt(privateKey, "wqh".getBytes());
-        System.out.println(new String(wdc));
-        System.out.println(new String(wqh));
+        System.out.println(Base64.getEncoder().encodeToString(wdc));
+        System.out.println(Base64.getEncoder().encodeToString(wqh));
         System.out.println(new String(rsaDecrypt(privateKey, wdc)));
         System.out.println(new String(rsaDecrypt(publicKey, wqh)));
 
