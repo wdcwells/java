@@ -29,6 +29,7 @@
         <module>spring-boot-retry</module>
         <module>spring-boot-elastic-job</module>
         <module>spring-boot-utils</module>
+        <module>spring-boot-dubbo</module>
     </modules>
 
 </project>

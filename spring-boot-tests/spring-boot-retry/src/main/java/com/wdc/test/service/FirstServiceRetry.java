@@ -9,7 +9,7 @@ import org.springframework.stereotype.Service;
  * @date 2018/6/28
  */
 @Service
-public class FirstServiceRetry {
+public class FirstServiceRetry implements IFirstServiceRetry{
 
 
     @Retryable

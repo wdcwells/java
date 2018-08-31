@@ -17,7 +17,7 @@ import java.util.stream.IntStream;
 @Service
 public class FirstService {
     @Autowired
-    private FirstServiceRetry firstServiceRetry;
+    private IFirstServiceRetry firstServiceRetry;
 
     public int num() {
         try {
