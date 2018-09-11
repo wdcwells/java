@@ -42,7 +42,22 @@ public class Parent {
     }
 
     public static void main(String[] args) {
-        new Parent().new P1().print();
+        Parent parent = new Parent();
+//        parent.new P1().print();
+        parent.new I1Impl().impl();
+    }
+
+    private interface I1 {
+        default void foo() {
+            System.out.println("I1.foo");
+        }
+    }
+
+    private class I1Impl implements I1 {
+        public void impl() {
+//            super.foo();// can't find it
+            I1.super.foo();//this is ok
+        }
     }
 
     private class P1 extends SP {
