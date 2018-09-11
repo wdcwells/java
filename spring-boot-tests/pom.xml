@@ -30,6 +30,7 @@
         <module>spring-boot-elastic-job</module>
         <module>spring-boot-utils</module>
         <module>spring-boot-dubbo</module>
+        <module>spring-boot-dubbox</module>
     </modules>
 
 </project>

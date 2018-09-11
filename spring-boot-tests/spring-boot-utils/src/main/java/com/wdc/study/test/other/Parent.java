@@ -42,8 +42,21 @@ public class Parent {
     }
 
     public static void main(String[] args) {
-
+        new Parent().new P1().print();
     }
+
+    private class P1 extends SP {
+        @Override
+        public void print() {
+            System.out.println(Parent.super.toString());
+            System.out.println(P1.super.toString());
+        }
+    }
+
+    private class SP {
+        protected void print() {}
+    }
+
 
     public interface IParent {
         int i = 1, ii = test("ii", 2), s = 3;
