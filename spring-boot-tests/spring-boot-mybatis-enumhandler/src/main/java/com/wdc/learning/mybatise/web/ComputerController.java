@@ -28,7 +28,7 @@ public class ComputerController {
     }
 
     @GetMapping("page")
-    public Object getPage(@SortDefault(sort = {"publish_time", "create_time"}, direction = Sort.Direction.DESC) Sort springSort) {
+    public Object getPage(@SortDefault(sort = {"id"}, direction = Sort.Direction.DESC) Sort springSort) {
         Page<Object> page = new Page<>();
         page.setSort(springSort);
         return computerService.getPage(page);

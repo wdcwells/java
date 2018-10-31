@@ -7,7 +7,6 @@ import com.wdc.learning.mybatise.service.ComputerService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.Collections;
 import java.util.List;
 
 /**
@@ -37,7 +36,8 @@ public class ComputerServiceImpl implements ComputerService {
 
     @Override
     public Page<Computer> getPage(Page page) {
-        page.setElements(Collections.emptyList());
+        page.setElements(computerRepository.getPage(page));
+        page.setTotalCount(computerRepository.count());
         return page;
     }
 }

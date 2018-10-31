@@ -1,5 +1,6 @@
 package com.wdc.learning.mybatise.domain.repository;
 
+import com.wdc.learning.mybatise.domain.Page;
 import com.wdc.learning.mybatise.domain.entity.Computer;
 import org.apache.ibatis.annotations.*;
 import org.apache.ibatis.mapping.StatementType;
@@ -23,6 +24,11 @@ public interface ComputerRepository {
 
     @Select("select * from computer where id=#{id}")
     Computer geOne(@Param("id") Integer id);
+
+    @Select("select count(1) from computer")
+    long count();
+
+    List<Computer> getPage(Page page);
 }
 
 
