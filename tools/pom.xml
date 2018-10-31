@@ -15,7 +15,6 @@
     <modules>
         <module>jdbc</module>
         <module>crawl</module>
-        <module>mail</module>
     </modules>
 
 </project>
