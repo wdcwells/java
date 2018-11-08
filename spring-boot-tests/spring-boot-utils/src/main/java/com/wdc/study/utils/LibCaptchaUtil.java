@@ -11,7 +11,7 @@ import java.io.OutputStream;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 
-public class CaptchaUtil {
+public class LibCaptchaUtil {
 
     public static void main(String[] args) {
         String format = "png";
