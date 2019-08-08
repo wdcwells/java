@@ -18,6 +18,8 @@ public interface YoungMapper {
 
     List<Young> findByIds(Integer[] ids);
 
+    List<Young> findByExample(Young example);
+
     //分页
     long searchCount(YoungQuery query);
     List<Young> searchPage(Map map);

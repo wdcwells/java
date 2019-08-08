@@ -13,6 +13,7 @@ import java.util.List;
 public interface YoungService {
     List<Young> findAll();
     List<Young> findByIds(Integer[] ids);
+    List<Young> findByExample(Young example);
     long searchCount(YoungQuery query);
     Page<Young> findPage(Pageable pageable, YoungQuery query);
 

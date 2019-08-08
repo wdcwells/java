@@ -31,6 +31,11 @@ public class YoungServiceImpl implements YoungService{
     }
 
     @Override
+    public List<Young> findByExample(Young example) {
+        return youngMapper.findByExample(example);
+    }
+
+    @Override
     public long searchCount(YoungQuery query) {
         return youngMapper.searchCount(query);
     }

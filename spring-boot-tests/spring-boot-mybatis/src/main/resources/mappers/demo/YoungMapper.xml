@@ -12,6 +12,15 @@
             </foreach>
         </if>
     </select>
+
+    <select id="findByExample" resultType="com.wdc.demo.domain.model.Young">
+        select * from demo_young
+        <where>
+            <if test="null != id">id=#{id}</if>
+            <if test="null != name and name != ''">and name=#{name}</if>
+        </where>
+    </select>
+
     <select id="searchPage" resultType="com.wdc.demo.domain.model.Young" parameterType="java.util.Map">
         select * from demo_young where 1=1
         <if test="query != null">

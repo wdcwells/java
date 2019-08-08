@@ -31,9 +31,14 @@ public class YoungController {
         return youngService.findAll();
     }
 
-    @RequestMapping("some")
+    @RequestMapping("in")
     public List<Young> findByIds(Integer[] ids) {
         return youngService.findByIds(ids);
+    }
+
+    @RequestMapping("some")
+    public List<Young> findByExample(Young example) {
+        return youngService.findByExample(example);
     }
 
     @RequestMapping(value = "page")
