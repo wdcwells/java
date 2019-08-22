@@ -1,14 +1,14 @@
 package com.wdc.study.utils;
 
 import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
+import org.apache.commons.collections4.CollectionUtils;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.ss.util.CellReference;
 
 import java.io.File;
 import java.io.FileWriter;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 
 /**
  * title: <br>
@@ -23,7 +23,181 @@ import java.util.List;
 public class ExcelPoiUtil {
 
     public static void main(String[] args) throws Exception {
+        printErrorCode();
+//        printWqh();
+    }
 
+    private static void printErrorCode() throws Exception {
+        final File importFile = new File("/Users/wdc/Documents/tests/tmp/opr交易错误码.xlsx");
+        final List<Line> lines = Lists.newArrayList();
+
+        try (Workbook wb = WorkbookFactory.create(importFile)) {
+            final WorkBookParseConfig parseConfig = new WorkBookParseConfig();
+            parseConfig.setDataRowStart(1);
+            parseConfig.setHeaders(new String[]{"type", "apiGroup", "apiUri", "errorCode", "subErrorCode", "subErrorMsg", "solution"});
+            parseConfig.setLineIdPrefix("题目");
+            lines.addAll(parseWorkBook(wb, parseConfig));
+        }
+        System.out.println("总数量：" + lines.size());
+        final Map<String, ErrorCode> map = Maps.newHashMap();
+        int i = 0, j = 0;
+        for (; i < lines.size(); i++) {
+            final Line line = lines.get(i);
+            if (null != line && CollectionUtils.isNotEmpty(line.getColumns())) {
+                final ErrorCode errorCode = new ErrorCode();
+                line.getColumns().forEach(column -> {
+                    switch (column.getColumnName()) {
+                        case "type":
+                            errorCode.setType(column.getColumnValue().toString().trim());
+                            break;
+                        case "apiGroup":
+                            errorCode.setApiGroup(column.getColumnValue().toString().trim());
+                            break;
+                        case "apiUri":
+                            errorCode.setApiUri(column.getColumnValue().toString().trim());
+                            break;
+                        case "errorCode":
+                            errorCode.setErrorCode(Double.valueOf(column.getColumnValue().toString().trim()).intValue() + "");
+                            break;
+                        case "subErrorCode":
+                            errorCode.setSubErrorCode(column.getColumnValue().toString().trim());
+                            break;
+                        case "subErrorMsg":
+                            errorCode.setSubErrorMsg(column.getColumnValue().toString().trim());
+                            break;
+                        case "solution":
+                            errorCode.setSolution((String) column.getColumnValue());
+                            break;
+                    }
+                });
+                if (map.get(errorCode.getUniqId()) != null) {
+                    System.out.println("重复错误码：" + errorCode);
+                    j++;
+                } else {
+                    map.put(errorCode.getUniqId(), errorCode);
+                }
+            }
+        }
+
+        System.out.println("---------------------------------------------------------------------------");
+        System.out.println("重复数量：" + j);
+        System.out.println("入库数量：" + map.size());
+        System.out.println("---------------------------------------------------------------------------");
+
+
+        final StringBuilder deleteSql = new StringBuilder();
+        final ErrorCode[] errorCodes = map.values().toArray(new ErrorCode[map.size()]);
+        for (int i1 = 0; i1 < errorCodes.length; i1++) {
+            final ErrorCode errorCode = errorCodes[i1];
+            deleteSql.append(String.format("delete from tbl_error_code_solution where error_code_id in (select id from tbl_error_code " +
+                            "where type = '%s' and error_code = '%s' and sub_error_code = '%s' and api_group_code = '%s' and api_uri = '%s');%n",
+                    errorCode.getType(), errorCode.getErrorCode(), errorCode.getSubErrorCode(), errorCode.getApiGroup(), errorCode.getApiUri()
+            ));
+
+            final String solution = null == errorCode.getSolution() ? "" : errorCode.getSolution();
+
+            System.out.println(String.format("insert into tbl_error_code_solution(error_code_id, inner_solution, outer_solution) values(ifnull((select id from tbl_error_code " +
+                            "where type = '%s' and error_code = '%s' and sub_error_code = '%s' and api_group_code = '%s' and api_uri = '%s'), -99999), '%s', '%s');",
+                    errorCode.getType(), errorCode.getErrorCode(), errorCode.getSubErrorCode(), errorCode.getApiGroup(), errorCode.getApiUri(), solution, solution
+            ));
+        }
+
+
+//        System.out.println("delete sqls:\n" + deleteSql);
+        System.out.println("---------------------------------------------------------------------------");
+
+
+//        final PrintConfig printConfig = new PrintConfig();
+//        printConfig.setSkipColumns(new int[]{});
+//        printConfig.setLineSeparator("\n");
+//        printConfig.setColumnSeparator("\t");
+
+    }
+
+    private static class ErrorCode {
+        private String type;
+        private String apiGroup;
+        private String apiUri;
+        private String errorCode;
+        private String subErrorCode;
+        private String subErrorMsg;
+        private String solution;
+
+        public String getType() {
+            return type;
+        }
+
+        public void setType(String type) {
+            this.type = type;
+        }
+
+        public String getApiGroup() {
+            return apiGroup;
+        }
+
+        public void setApiGroup(String apiGroup) {
+            this.apiGroup = apiGroup;
+        }
+
+        public String getApiUri() {
+            return apiUri;
+        }
+
+        public void setApiUri(String apiUri) {
+            this.apiUri = apiUri;
+        }
+
+        public String getErrorCode() {
+            return errorCode;
+        }
+
+        public void setErrorCode(String errorCode) {
+            this.errorCode = errorCode;
+        }
+
+        public String getSubErrorCode() {
+            return subErrorCode;
+        }
+
+        public void setSubErrorCode(String subErrorCode) {
+            this.subErrorCode = subErrorCode;
+        }
+
+        public String getSubErrorMsg() {
+            return subErrorMsg;
+        }
+
+        public void setSubErrorMsg(String subErrorMsg) {
+            this.subErrorMsg = subErrorMsg;
+        }
+
+        public String getSolution() {
+            return solution;
+        }
+
+        public void setSolution(String solution) {
+            this.solution = solution;
+        }
+
+        public String getUniqId() {
+            return type + errorCode + subErrorCode + apiGroup + apiUri;
+        }
+
+        @Override
+        public String toString() {
+            return "ErrorCode{" +
+                    "type='" + type + '\'' +
+                    ", apiGroup='" + apiGroup + '\'' +
+                    ", apiUri='" + apiUri + '\'' +
+                    ", errorCode='" + errorCode + '\'' +
+                    ", subErrorCode='" + subErrorCode + '\'' +
+                    ", subErrorMsg='" + subErrorMsg + '\'' +
+                    ", solution='" + solution + '\'' +
+                    '}';
+        }
+    }
+
+    private static void printWqh() throws Exception {
         final List<Line> lines = Lists.newArrayList();
         for (int i = 1; i < 9; i++) {
             final File importFile = new File("/Users/wdc/Downloads/压缩包/UMU_题库(护理题库" + i + ").xlsx");
@@ -255,7 +429,7 @@ public class ExcelPoiUtil {
                 if (DateUtil.isCellDateFormatted(cell)) {
                     column.setColumnValue(cell.getDateCellValue());
                 } else {
-                    column.setColumnValue(cell.getNumericCellValue());
+                    column.setColumnValue(String.valueOf(cell.getNumericCellValue()));
                 }
                 break;
             case STRING:
