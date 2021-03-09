@@ -2,11 +2,13 @@ package com.wdc.test;
 
 import com.wdc.test.interceptors.HelloInterceptor;
 import com.wdc.test.utils.JsonUtil;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.web.servlet.ServletComponentScan;
 import org.springframework.context.annotation.Bean;
 import org.springframework.core.MethodParameter;
+import org.springframework.format.support.FormattingConversionService;
 import org.springframework.http.MediaType;
 import org.springframework.http.client.SimpleClientHttpRequestFactory;
 import org.springframework.http.converter.HttpMessageConverter;
@@ -14,6 +16,8 @@ import org.springframework.http.server.ServerHttpRequest;
 import org.springframework.http.server.ServerHttpResponse;
 import org.springframework.http.server.ServletServerHttpRequest;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
+import org.springframework.validation.Validator;
+import org.springframework.web.accept.ContentNegotiationManager;
 import org.springframework.web.client.AsyncRestTemplate;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
@@ -35,10 +39,10 @@ public class FilterIntercepterMain extends WebMvcConfigurationSupport {
         registry.addInterceptor(new HelloInterceptor()).addPathPatterns("/hello/*");
     }
     @Bean
-    public RequestMappingHandlerAdapter requestMappingHandlerAdapter() {
+    public RequestMappingHandlerAdapter requestMappingHandlerAdapter(@Qualifier("mvcContentNegotiationManager") ContentNegotiationManager contentNegotiationManager, @Qualifier("mvcConversionService") FormattingConversionService conversionService, @Qualifier("mvcValidator") Validator validator) {
         // Create or delegate to "super" to create and
         // customize properties of RequestMappingHandlerAdapter
-        RequestMappingHandlerAdapter adapter = super.requestMappingHandlerAdapter();
+        RequestMappingHandlerAdapter adapter = super.requestMappingHandlerAdapter(contentNegotiationManager, conversionService, validator);
         adapter.setResponseBodyAdvice(Collections.singletonList(new ResponseBodyAdvice<Object>() {
 
             @Override

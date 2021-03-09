@@ -26,14 +26,14 @@ public class HomeService {
     private TxHelperService txHelperService;
 
     public Customer findOne(Long id) {
-        return customerRepository.findOne(id);
+        return customerRepository.findById(id).get();
     }
 
 //    @Async
     public void testAsyncFind(){
         System.out.println(tmpUserRepository.count());
         System.out.println(customerRepository.count());
-        System.out.println(customerRepository.findOne(1L).getLastName());
+        System.out.println(customerRepository.findById(1L).get().getLastName());
         throw new RuntimeException("error");
     }
 
@@ -41,7 +41,7 @@ public class HomeService {
     @Transactional
     public void testTransactional() throws Exception {
         Thread.sleep(5 * 1000);
-        Customer jack = customerRepository.findOne(1L);
+        Customer jack = customerRepository.findById(1L).get();
         jack.setLastName("Bauer1");
         customerRepository.save(jack);
         saveCustomer();

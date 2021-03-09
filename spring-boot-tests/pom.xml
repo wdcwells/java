@@ -16,7 +16,7 @@
         <module>spring-boot-rest-security</module>
         <module>spring-boot-mybatis</module>
         <module>spring-boot-logback</module>
-        <module>spring-boot-redis</module>
+        <!--<module>spring-boot-redis</module>-->
         <module>spring-boot-mybatis-enumhandler</module>
         <module>spring-boot-dependency-management</module>
         <module>spring-boot-flyway</module>
@@ -31,6 +31,7 @@
         <module>spring-boot-dubbo</module>
         <module>spring-boot-dubbox</module>
         <module>spring-boot-jetty</module>
+        <module>spring-boot-hasor</module>
     </modules>
 
 </project>
