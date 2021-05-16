@@ -32,6 +32,7 @@
         <module>spring-boot-dubbox</module>
         <module>spring-boot-jetty</module>
         <module>spring-boot-hasor</module>
+        <module>spring-boot-baker</module>
     </modules>
 
 </project>
